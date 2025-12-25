@@ -13,3 +13,7 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+    form:
+        themes:
+            - 'bootstrap_5_layout.html.twig'
+            - 'bootstrap_5_horizontal_layout.html.twig'

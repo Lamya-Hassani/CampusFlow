@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-tachometer-alt me-3"></i>
+                    Welcome back, {{ app.user.username }}!
+                </h3>
+            </div>
+            <div class="card-body p-5 text-center">
+                <i class="fas fa-user-graduate fa-5x text-primary mb-4"></i>
+                <p class="lead">You are logged in as a <strong>student</strong>.</p>
+                <p>Your class: 
+                    {% if app.user.eleve.classe %}
+                        <strong>{{ app.user.eleve.classe.nom }} ({{ app.user.eleve.classe.niveau }})</strong>
+                    {% else %}
+                        <em>Not assigned to a class yet</em>
+                    {% endif %}
+                </p>
+                <hr class="my-5">
+                <p class="text-muted">Student features coming soon: grades, schedule, attendance...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

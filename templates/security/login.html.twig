@@ -1,0 +1,72 @@
+{# templates/security/login.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign In - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-gradient bg-primary text-white text-center py-5">
+                    <h2 class="mb-0">
+                        <i class="fas fa-graduation-cap fa-2x mb-3 d-block"></i>
+                        CampusFlow
+                    </h2>
+                    <h4 class="mb-0">Sign In</h4>
+                </div>
+
+                <div class="card-body p-5">
+                    {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Login failed!</strong><br>
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('app_login') }}">
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-bold">Username</label>
+                            <input type="text" name="username" id="username" class="form-control form-control-lg"
+                                   value="{{ last_username }}" required autofocus placeholder="Enter username">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-bold">Password</label>
+                            <input type="password" name="password" id="password" class="form-control form-control-lg"
+                                   required placeholder="Enter password">
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" name="_remember_me" id="remember_me" class="form-check-input">
+                            <label class="form-check-label" for="remember_me">Remember me</label>
+                        </div>
+
+                        {# CRITICAL: This hidden field fixes "Invalid CSRF token" #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg shadow">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-5">
+
+                    <div class="text-center text-muted">
+                        <small class="fw-bold">Development Accounts:</small><br>
+                        <div class="mt-3">
+                            <span class="badge bg-danger me-2">admin</span> / aa → Administrator<br>
+                            <span class="badge bg-success me-2">teacher1</span> / aa → Teacher<br>
+                            <span class="badge bg-info me-2">student1</span> / aa → Student
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

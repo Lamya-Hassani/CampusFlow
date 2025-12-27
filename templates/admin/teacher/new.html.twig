@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Enseignant - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6"><a href="{{ path('admin_teacher_index') }}" class="text-indigo-600">← Retour</a></div>
+    <h1 class="text-3xl font-bold mb-6">Nouvel enseignant</h1>
+    <div class="bg-white shadow rounded-lg p-6">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="flex justify-end space-x-3 mt-6">
+                <a href="{{ path('admin_teacher_index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</a>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+

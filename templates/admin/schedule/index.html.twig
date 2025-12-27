@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion Emploi du Temps - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Gestion de l'Emploi du Temps</h1>
+        <a href="{{ path('admin_schedule_new') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">+ Nouveau créneau</a>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jour</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heure</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matière</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classe</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enseignant</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Salle</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for schedule in schedules %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.dayOfWeek }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.subject.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.classe.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.teacher.fullName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.room }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <a href="{{ path('admin_schedule_edit', {id: schedule.id}) }}" class="text-yellow-600 mr-3">Modifier</a>
+                        <form method="post" action="{{ path('admin_schedule_delete', {id: schedule.id}) }}" class="inline" onsubmit="return confirm('Supprimer ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ schedule.id) }}">
+                            <button type="submit" class="text-red-600">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

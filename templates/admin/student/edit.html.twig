@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'Étudiant - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6">
+        <a href="{{ path('admin_student_index') }}" class="text-indigo-600 hover:text-indigo-900">← Retour à la liste</a>
+    </div>
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Modifier l'étudiant : {{ student.fullName }}</h1>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                    {{ form_label(form.firstName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.firstName) }}
+                    {{ form_errors(form.firstName) }}
+                </div>
+                <div>
+                    {{ form_label(form.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.lastName) }}
+                    {{ form_errors(form.lastName) }}
+                </div>
+                <div>
+                    {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_errors(form.email) }}
+                </div>
+                <div>
+                    {{ form_label(form.password, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    <small class="text-gray-500">Laisser vide pour ne pas modifier</small>
+                    {{ form_widget(form.password) }}
+                    {{ form_errors(form.password) }}
+                </div>
+                <div>
+                    {{ form_label(form.cne, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.cne) }}
+                    {{ form_errors(form.cne) }}
+                </div>
+                <div>
+                    {{ form_label(form.birthDate, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.birthDate) }}
+                    {{ form_errors(form.birthDate) }}
+                </div>
+                <div>
+                    {{ form_label(form.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.phone) }}
+                    {{ form_errors(form.phone) }}
+                </div>
+                <div>
+                    {{ form_label(form.classe, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.classe) }}
+                    {{ form_errors(form.classe) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_label(form.address, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.address) }}
+                    {{ form_errors(form.address) }}
+                </div>
+                <div>
+                    {{ form_label(form.profilePicture, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {% if student.profilePicture %}
+                        <p class="text-sm text-gray-500 mb-2">Photo actuelle : <img src="{{ asset(student.profilePicture) }}" alt="Photo" class="h-20 w-20 rounded-full inline-block"></p>
+                    {% endif %}
+                    {{ form_widget(form.profilePicture) }}
+                    {{ form_errors(form.profilePicture) }}
+                </div>
+                <div>
+                    {{ form_label(form.status, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.status) }}
+                    {{ form_errors(form.status) }}
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{{ path('admin_student_index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Annuler
+                </a>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                    Enregistrer
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+

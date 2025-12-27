@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Enseignant - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6"><a href="{{ path('admin_teacher_index') }}" class="text-indigo-600">← Retour</a></div>
+    <h1 class="text-3xl font-bold mb-6">{{ teacher.fullName }}</h1>
+    <div class="bg-white shadow rounded-lg p-6">
+        <dl class="grid grid-cols-2 gap-4">
+            <div><dt class="font-medium">Email</dt><dd>{{ teacher.user.email }}</dd></div>
+            <div><dt class="font-medium">Téléphone</dt><dd>{{ teacher.phone ?? 'N/A' }}</dd></div>
+            <div><dt class="font-medium">Spécialité</dt><dd>{{ teacher.specialty }}</dd></div>
+            <div><dt class="font-medium">Grade</dt><dd>{{ teacher.grade }}</dd></div>
+        </dl>
+        <h3 class="mt-6 font-bold">Matières enseignées</h3>
+        <ul class="list-disc list-inside">
+            {% for subject in teacher.subjects %}
+                <li>{{ subject.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+

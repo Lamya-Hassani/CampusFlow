@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Étudiant - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6">
+        <a href="{{ path('admin_student_index') }}" class="text-indigo-600 hover:text-indigo-900">← Retour à la liste</a>
+    </div>
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Détails de l'étudiant</h1>
+        <a href="{{ path('admin_student_edit', {id: student.id}) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            Modifier
+        </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center">
+                {% if student.profilePicture %}
+                    <img src="{{ asset(student.profilePicture) }}" alt="Photo" class="h-24 w-24 rounded-full mr-4">
+                {% else %}
+                    <div class="h-24 w-24 rounded-full bg-gray-300 flex items-center justify-center mr-4">
+                        <span class="text-3xl">👤</span>
+                    </div>
+                {% endif %}
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">{{ student.fullName }}</h2>
+                    <p class="text-gray-600">{{ student.user.email }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4">
+            <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">CNE</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.cne }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Date de naissance</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.birthDate|date('d/m/Y') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Téléphone</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.phone ?? 'Non renseigné' }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Classe</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.classe.name }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Date d'inscription</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.enrollmentDate|date('d/m/Y') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Statut</dt>
+                    <dd class="mt-1">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if student.status == 'active' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ student.status }}
+                        </span>
+                    </dd>
+                </div>
+                {% if student.address %}
+                <div class="sm:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500">Adresse</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ student.address }}</dd>
+                </div>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

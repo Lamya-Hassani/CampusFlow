@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Classe - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6">
+        <a href="{{ path('admin_classe_index') }}" class="text-indigo-600 hover:text-indigo-900">← Retour</a>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Classe : {{ classe.name }}</h1>
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <dl class="grid grid-cols-2 gap-4">
+            <div><dt class="font-medium">Niveau</dt><dd>{{ classe.level }}</dd></div>
+            <div><dt class="font-medium">Filière</dt><dd>{{ classe.field }}</dd></div>
+            <div><dt class="font-medium">Capacité</dt><dd>{{ classe.studentCount }}/{{ classe.maxCapacity }}</dd></div>
+            <div><dt class="font-medium">Année</dt><dd>{{ classe.academicYear }}</dd></div>
+        </dl>
+    </div>
+    <h2 class="text-2xl font-bold mb-4">Étudiants ({{ classe.students|length }})</h2>
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CNE</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for student in classe.students %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ student.fullName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ student.cne }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ student.user.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

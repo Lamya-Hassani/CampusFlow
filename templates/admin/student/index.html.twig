@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Étudiants - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Gestion des Étudiants</h1>
+        <a href="{{ path('admin_student_new') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            + Nouvel étudiant
+        </a>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" class="mb-6">
+        <div class="flex gap-2">
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search }}" 
+                placeholder="Rechercher par nom, prénom ou CNE..."
+                class="flex-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            >
+            <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                Rechercher
+            </button>
+            {% if search %}
+                <a href="{{ path('admin_student_index') }}" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">
+                    Réinitialiser
+                </a>
+            {% endif %}
+        </div>
+    </form>
+
+    <!-- Students Table -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNE</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classe</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for student in students %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ student.fullName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.cne }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.user.email }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.classe.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if student.status == 'active' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ student.status }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{{ path('admin_student_show', {id: student.id}) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Voir</a>
+                        <a href="{{ path('admin_student_edit', {id: student.id}) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Modifier</a>
+                        <form method="post" action="{{ path('admin_student_delete', {id: student.id}) }}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
+                            <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Aucun étudiant trouvé</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Matières - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Gestion des Matières</h1>
+        <a href="{{ path('admin_subject_new') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">+ Nouvelle matière</a>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Coefficient</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for subject in subjects %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ subject.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ subject.code }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ subject.coefficient }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <a href="{{ path('admin_subject_edit', {id: subject.id}) }}" class="text-yellow-600 mr-3">Modifier</a>
+                        <form method="post" action="{{ path('admin_subject_delete', {id: subject.id}) }}" class="inline" onsubmit="return confirm('Supprimer ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subject.id) }}">
+                            <button type="submit" class="text-red-600">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Note - CampusFlow{% endblock %}
+
+{% block body %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="mb-6">
+        <a href="{{ path('admin_grades_index') }}" class="text-indigo-600 hover:text-indigo-900">← Retour</a>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Ajouter une note</h1>
+    <div class="bg-white shadow rounded-lg p-6">
+        {{ include('admin/grade/_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

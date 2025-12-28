@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bulletin - {{ student.fullName }}{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">
+                Bulletin de Notes - {{ student.fullName }}
+            </h1>
+            <p class="text-gray-600 mt-2">
+                Semestre {{ semester }} - Classe {{ student.classe.name }}
+            </p>
+        </div>
+        
+        <div class="flex gap-3">
+            <a href="{{ path('admin_student_edit_bulletin', {'id': student.id, 'semester': semester}) }}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                <i class="fas fa-edit mr-2"></i>Modifier les notes
+            </a>
+            
+            <a href="{{ path('admin_student_bulletin_pdf', {'id': student.id, 'semester': semester}) }}" 
+               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
+               download>
+                <i class="fas fa-download mr-2"></i>Télécharger PDF
+            </a>
+            
+            <a href="{{ path('admin_student_show', {'id': student.id}) }}" 
+               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
+                <i class="fas fa-arrow-left mr-2"></i>Retour
+            </a>
+        </div>
+    </div>
+
+    {# Preview matching PDF exactly #}
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-5xl mx-auto text-sm" style="font-family: 'DejaVu Sans', Arial, sans-serif;">
+        
+        {# ==== HEADER (3 zones) ==== #}
+        <table class="w-full border-collapse mb-4">
+            <tr>
+                <td class="text-left align-top" style="width: 33%;">
+                    Royaume du Maroc<br />
+                    Ministère de l'Éducation Nationale<br />
+                    Académie …<br />
+                    Délégation …<br />
+                    Établissement …
+                </td>
+                <td class="text-center align-top" style="width: 34%;">
+                    <strong>Bulletin du {{ semester }}ème Semestre</strong><br />
+                    Année scolaire {{ "now"|date("Y") }}/{{ "now"|date("Y") + 1 }}<br />
+                    Classe : {{ student.classe.name }}<br />
+                    CNE : {{ student.cne }}
+                </td>
+                <td class="text-right align-top" style="width: 33%;">
+                    Code établissement : ……<br />
+                    N° d'ordre : ……<br />
+                </td>
+            </tr>
+        </table>
+
+        {# ==== IDENTITÉ ÉLÈVE ==== #}
+        <table class="w-full border-collapse border border-black mt-4 mb-6">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border border-black px-3 py-2 text-center">Nom et Prénom</th>
+                    <th class="border border-black px-3 py-2 text-center">Date de naissance</th>
+                    <th class="border border-black px-3 py-2 text-center">Lieu</th>
+                    <th class="border border-black px-3 py-2 text-center">Sexe</th>
+                    <th class="border border-black px-3 py-2 text-center">Redoublant</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="border border-black px-3 py-2 text-center">{{ student.fullName }}</td>
+                    <td class="border border-black px-3 py-2 text-center">
+                        {{ student.birthDate is defined ? student.birthDate|date('d/m/Y') : '' }}
+                    </td>
+                    <td class="border border-black px-3 py-2 text-center">{{ student.birthPlace ?? '' }}</td>
+                    <td class="border border-black px-3 py-2 text-center"></td>
+                    <td class="border border-black px-3 py-2 text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        {# ==== GRAND TABLEAU DES NOTES ==== #}
+        <table class="w-full border-collapse border border-black mb-6">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th rowspan="2" class="border border-black px-3 py-2 align-middle" style="width: 20%;">Matières</th>
+                    <th colspan="3" class="border border-black px-2 py-1" style="width: 18%;">Contrôles continus</th>
+                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 8%;">Exam</th>
+                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 7%;">Coef</th>
+                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 9%;">Moyenne</th>
+                    <th rowspan="2" class="border border-black px-3 py-2 align-middle">Observations</th>
+                </tr>
+                <tr>
+                    <th class="border border-black px-2 py-1" style="width: 6%;">1</th>
+                    <th class="border border-black px-2 py-1" style="width: 6%;">2</th>
+                    <th class="border border-black px-2 py-1" style="width: 6%;">3</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                <tr>
+                    <td class="border border-black px-3 py-2 text-left">{{ grade.subject.name }}</td>
+                    <td class="border border-black px-2 py-2 text-center"></td>
+                    <td class="border border-black px-2 py-2 text-center"></td>
+                    <td class="border border-black px-2 py-2 text-center"></td>
+                    <td class="border border-black px-2 py-2 text-center">
+                        {{ grade.exam is defined ? grade.exam|number_format(2) : grade.value|number_format(2) }}
+                    </td>
+                    <td class="border border-black px-2 py-2 text-center">{{ grade.subject.coefficient|number_format(1) }}</td>
+                    <td class="border border-black px-2 py-2 text-center">{{ grade.value|number_format(2) }}</td>
+                    <td class="border border-black px-3 py-2 text-center"></td>
+                </tr>
+                {% endfor %}
+                <tr class="bg-gray-100 font-bold">
+                    <td class="border border-black px-3 py-2 text-right">
+                        <strong>Total / Moyenne générale</strong>
+                    </td>
+                    <td colspan="3" class="border border-black"></td>
+                    <td class="border border-black"></td>
+                    <td class="border border-black px-2 py-2 text-center">
+                        <strong>{{ totalCoef|number_format(1) }}</strong>
+                    </td>
+                    <td class="border border-black px-2 py-2 text-center">
+                        <strong>{{ average|number_format(2) }}</strong>
+                    </td>
+                    <td class="border border-black"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        {# ==== BAS DE PAGE : three bordered sections ==== #}
+        <table class="w-full border-collapse mb-3">
+            <tr>
+                <td class="border border-black px-3 py-2 align-top" style="width: 40%;">
+                    <strong>Appréciation du professeur principal :</strong><br />
+                    <div style="height: 120px;"></div>
+                </td>
+                <td style="width: 2%;"></td>
+                <td class="border border-black px-3 py-2 align-top text-center" style="width: 28%;">
+                    <strong>Décision du conseil :</strong><br /><br />
+                    <div class="text-left inline-block">
+                        <label class="flex items-center gap-2 text-sm mb-2">
+                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
+                            Admis
+                        </label>
+                        <label class="flex items-center gap-2 text-sm mb-2">
+                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
+                            Ajourné
+                        </label>
+                        <label class="flex items-center gap-2 text-sm">
+                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
+                            Redouble
+                        </label>
+                    </div>
+                </td>
+                <td style="width: 2%;"></td>
+                <td class="border border-black px-3 py-2 align-top" style="width: 28%;">
+                    <strong>Visa des parents :</strong><br />
+                    <div style="height: 120px;"></div>
+                </td>
+            </tr>
+        </table>
+
+        {# ==== SIGNATURE DU DIRECTEUR ==== #}
+        <div class="text-left mt-3">
+            <strong>Le Directeur</strong>
+        </div>
+    </div>
+</div>
+{% endblock %}

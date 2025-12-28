@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bulletin</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 15mm 15mm 15mm 15mm;
+      }
+      
+      body {
+        font-family: 'DejaVu Sans', sans-serif;
+        font-size: 9pt;
+        color: #000;
+      }
+      
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 0.4pt solid #000;
+        padding: 3pt 4pt;
+        text-align: center;
+      }
+      th {
+        background: #f2f2f2;
+      }
+      
+      .no-border td,
+      .no-border th {
+        border: none;
+      }
+      .left {
+        text-align: left;
+      }
+      .right {
+        text-align: right;
+      }
+      
+      .box {
+        border: 0.5pt solid #ffffffff;
+        height: 20mm;
+      }
+      .small-box {
+        border: 0.5pt solid #000;
+        height: 7mm;
+      }
+    </style>
+  </head>
+  <body>
+    {# ==== HEADER (3 zones comme sur la photo) ==== #}
+    <table class="no-border">
+      <tr>
+        <td class="left" width="33%">
+          Royaume du Maroc<br />
+          Ministère de l'Éducation Nationale<br />
+          Académie …<br />
+          Délégation …<br />
+          Établissement …
+        </td>
+        <td width="34%">
+          <strong>Bulletin du {{ semester }}ème Semestre</strong><br />
+          Année scolaire {{ 'now'|date('Y') }}/{{ ('now'|date('Y')) + 1 }}<br />
+          Classe : {{ student.classe.name }}<br />
+          CNE : {{ student.cne }}
+        </td>
+        <td class="right" width="33%">
+          Code établissement : ……<br />
+          N° d'ordre : ……<br />
+        </td>
+      </tr>
+    </table>
+
+    {# ==== IDENTITÉ ÉLÈVE ==== #}
+    <table style="margin-top:8pt;">
+      <tr>
+        <th>Nom et Prénom</th>
+        <th>Date de naissance</th>
+        <th>Lieu</th>
+        <th>Sexe</th>
+        <th>Redoublant</th>
+      </tr>
+      <tr>
+        <td>{{ student.fullName }}</td>
+        <td>{{ student.birthDate is defined ? student.birthDate|date('d/m/Y') : '' }}</td>
+        <td>{{ student.birthPlace ?? '' }}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+    {# ==== GRAND TABLEAU DES NOTES (adapter colonnes selon la photo) ==== #}
+    <table style="margin-top:12pt;">
+      <tr>
+        <th rowspan="2" width="20%">Matières</th>
+        <th colspan="3" width="18%">Contrôles continus</th>
+        <th rowspan="2" width="8%">Exam</th>
+        <th rowspan="2" width="7%">Coef</th>
+        <th rowspan="2" width="9%">Moyenne</th>
+        <th rowspan="2">Observations</th>
+      </tr>
+      <tr>
+        <th width="6%">1</th>
+        <th width="6%">2</th>
+        <th width="6%">3</th>
+      </tr>
+
+      {% for grade in grades %}
+        <tr>
+          <td class="left">{{ grade.subject.name }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{{ grade.exam is defined ? grade.exam|number_format(2) : grade.value|number_format(2) }}</td>
+          <td>{{ grade.subject.coefficient|number_format(1) }}</td>
+          <td>{{ grade.value|number_format(2) }}</td>
+          <td></td>
+        </tr>
+      {% endfor %}
+
+      <tr>
+        <td class="right">
+          <strong>Total / Moyenne générale</strong>
+        </td>
+        <td colspan="3"></td>
+        <td></td>
+        <td>
+          <strong>{{ totalCoef|number_format(1) }}</strong>
+        </td>
+        <td>
+          <strong>{{ average|number_format(2) }}</strong>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+
+    {# ==== BAS DE PAGE : appréciations / décision / visa ==== #}
+    <table style="margin-top:15pt; margin-bottom:6pt; " class="no-border">
+      <tr>
+        <td width="40%" valign="top" style="border: 0.5pt solid #000;">
+          <strong>Appréciation du professeur principal :</strong><br />
+          <div class="box"></div>
+        </td>
+        <td></td>
+        <td width="30%" valign="top" style=" border: 0.5pt solid #000;">
+          <strong>Décision du conseil :</strong><br />
+          <div style="margin-top:6pt; margin-bottom:1pt; text-align:left; display:inline-block;">
+            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block;"></span>
+            <span style="margin-left:4pt;">Admis</span><br />
+
+            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block; margin-top:4pt;"></span>
+            <span style="margin-left:4pt;">Ajourné</span><br />
+
+            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block; margin-top:4pt;"></span>
+            <span style="margin-left:4pt;">Redouble</span>
+          </div>
+        </td>
+        <td></td>
+        <td width="30%" valign="top" style="border: 0.5pt solid #000;">
+          <strong>Visa des parents :</strong><br />
+          <div class="box"></div>
+        </td>
+      </tr>
+    </table>
+
+    {# ==== SIGNATURE DU DIRECTEUR ==== #}
+    <div style="text-align:left; margin-top:6pt;">
+      <strong>Le Directeur</strong>
+    </div>
+  </body>
+</html>

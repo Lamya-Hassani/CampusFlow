@@ -11,6 +11,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        // Si l'utilisateur est connecté, rediriger vers son dashboard
         if ($this->getUser()) {
             $roles = $this->getUser()->getRoles();
             
@@ -23,7 +24,7 @@ class HomeController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_login');
+        // Sinon, afficher la landing page
+        return $this->render('home/index.html.twig');
     }
 }
-

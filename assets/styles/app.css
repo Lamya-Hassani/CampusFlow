@@ -1,2 +1,7 @@
-/* Tailwind CSS est chargé via CDN dans base.html.twig */
-/* Ce fichier est conservé pour compatibilité mais n'est plus utilisé */
+/* assets/styles/app.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./custom.css"; /* <-- ADD THIS LINE */

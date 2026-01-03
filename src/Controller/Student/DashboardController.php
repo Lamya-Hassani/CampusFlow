@@ -2,45 +2,53 @@
 
 namespace App\Controller\Student;
 
+use App\Repository\StudentRepository;
 use App\Repository\ScheduleRepository;
+use App\Repository\GradeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/student', name: 'student_')]
+#[IsGranted('ROLE_STUDENT')]
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'dashboard')]
-    public function index(ScheduleRepository $scheduleRepository, \App\Repository\StudentRepository $studentRepository): Response
+    public function index(
+        StudentRepository $studentRepo, 
+        ScheduleRepository $scheduleRepo,
+        GradeRepository $gradeRepo
+    ): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_STUDENT');
-
+        // Get the logged-in student
         $user = $this->getUser();
-        $student = $studentRepository->findOneBy(['user' => $user]);
+        $student = $studentRepo->findOneBy(['user' => $user]);
 
-        if (!$student || !$student->getClasse()) {
-            throw $this->createNotFoundException('Profil étudiant ou classe non trouvé');
+        if (!$student) {
+            throw $this->createNotFoundException('Profil étudiant non trouvé.');
         }
 
-        $schedules = $scheduleRepository->findBy(
-            ['classe' => $student->getClasse()],
-            ['dayOfWeek' => 'ASC', 'startTime' => 'ASC']
+        // Get today's schedule
+        // Assuming dayOfWeek is stored as 'Monday', 'Tuesday' or '1', '2'. 
+        // Let's assume PHP date('l') format: 'Monday'.
+        $today = date('l'); 
+        $todaysClasses = $scheduleRepo->findBy([
+            'classe' => $student->getClasse(),
+            'dayOfWeek' => $today
+        ], ['startTime' => 'ASC']);
+
+        // Get recent grades (limit 5)
+        $recentGrades = $gradeRepo->findBy(
+            ['student' => $student], 
+            ['createdAt' => 'DESC'], 
+            5
         );
-
-        // Group schedules by day
-        $schedulesByDay = [];
-        foreach ($schedules as $schedule) {
-            $day = $schedule->getDayOfWeek();
-            if (!isset($schedulesByDay[$day])) {
-                $schedulesByDay[$day] = [];
-            }
-            $schedulesByDay[$day][] = $schedule;
-        }
 
         return $this->render('student/dashboard.html.twig', [
             'student' => $student,
-            'schedulesByDay' => $schedulesByDay,
+            'todaysClasses' => $todaysClasses,
+            'recentGrades' => $recentGrades,
         ]);
     }
 }
-

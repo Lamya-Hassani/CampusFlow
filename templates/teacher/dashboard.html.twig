@@ -1,61 +1,232 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard Enseignant - CampusFlow{% endblock %}
+{% block title %}Espace Enseignant - CampusFlow{% endblock %}
 
 {% block body %}
-<div class="px-4 py-6 sm:px-0">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Dashboard Enseignant</h1>
+<!-- 
+    THEME: Cool Professional (Admin Match) - Increased Typography
+    - Background: Slate-50 (#F8FAFC)
+    - Text: Midnight Blue (#0F172A)
+    - Accents: Gold (#D97706) & Blue (#3A86FF)
+-->
+<div class="min-h-screen bg-slate-50 text-[#0F172A] px-4 py-8 relative overflow-hidden font-sans">
+    
+    <!-- Background Elements -->
+    <div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-[#3A86FF]/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <div class="bg-white shadow rounded-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">{{ teacher.fullName }}</h2>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-10 relative">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-6">
             <div>
-                <p class="text-sm text-gray-500">Spécialité</p>
-                <p class="text-lg font-medium">{{ teacher.specialty }}</p>
+                <span class="text-[#D97706] font-bold tracking-widest uppercase text-sm mb-2 block">Espace Pédagogique</span>
+                <h1 class="text-5xl md:text-6xl font-heading font-black text-[#0F172A] tracking-tight leading-none">
+                    Bonjour, <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D97706] to-[#F59E0B]">{{ teacher.fullName }}</span>.
+                </h1>
             </div>
-            <div>
-                <p class="text-sm text-gray-500">Grade</p>
-                <p class="text-lg font-medium">{{ teacher.grade }}</p>
+            <div class="flex items-center gap-3 bg-white/50 backdrop-blur-sm px-6 py-3 rounded-full border border-[#0F172A]/5 shadow-sm">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] animate-pulse"></span>
+                <p class="text-[#0F172A]/80 text-sm font-bold tracking-wide uppercase">{{ teacher.specialty }}</p>
             </div>
         </div>
     </div>
 
-    <h2 class="text-2xl font-bold text-gray-900 mb-4">Mon Emploi du Temps</h2>
-    
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jour</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heure</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matière</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classe</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Salle</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for day, schedules in schedulesByDay %}
-                        {% for schedule in schedules %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ schedule.dayOfWeek }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ schedule.subject.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ schedule.classe.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ schedule.room }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ schedule.courseType }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Aucun créneau programmé</td>
-                        </tr>
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- 1. KPI Row (Larger Fonts) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+            <!-- Classes -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-5">
+                <div class="w-12 h-12 rounded-xl bg-[#3A86FF]/10 text-[#3A86FF] flex items-center justify-center text-xl">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Classes</p>
+                    <p class="text-3xl font-black text-[#0F172A]">{{ classes|length }}</p>
+                </div>
+            </div>
+            <!-- Matières -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-5">
+                <div class="w-12 h-12 rounded-xl bg-[#D97706]/10 text-[#D97706] flex items-center justify-center text-xl">
+                    <i class="fas fa-shapes"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Matières</p>
+                    <p class="text-3xl font-black text-[#0F172A]">{{ subjects|length }}</p>
+                </div>
+            </div>
+            <!-- Total Élèves -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-5">
+                <div class="w-12 h-12 rounded-xl bg-[#10B981]/10 text-[#10B981] flex items-center justify-center text-xl">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Élèves</p>
+                    {% set totalStudents = 0 %}
+                    {% for cls in classes %}
+                        {% set totalStudents = totalStudents + cls.students|length %}
                     {% endfor %}
-                </tbody>
-            </table>
+                    <p class="text-3xl font-black text-[#0F172A]">{{ totalStudents }}</p>
+                </div>
+            </div>
+            <!-- Heures -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-5">
+                <div class="w-12 h-12 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6] flex items-center justify-center text-xl">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Heures</p>
+                    <p class="text-3xl font-black text-[#0F172A]">18h</p>
+                </div>
+            </div>
         </div>
+
+        <!-- 2. Info Grid (Classes & Subjects) - Taller & Larger Text -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            
+            <!-- My Classes -->
+            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8 flex flex-col h-[380px] relative overflow-hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-black text-[#0F172A] tracking-tight flex items-center gap-3">
+                        <span class="w-2 h-8 bg-[#3A86FF] rounded-full"></span>
+                        Vos Classes
+                    </h3>
+                    <a href="#" class="text-xs font-bold text-[#3A86FF] uppercase tracking-wide hover:underline">Voir tout</a>
+                </div>
+                
+                <div class="overflow-y-auto pr-2 space-y-3 flex-grow custom-scroll">
+                    {% for cls in classes %}
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-[#3A86FF]/30 hover:shadow-sm transition-all cursor-pointer group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-[#0F172A] text-white flex items-center justify-center font-bold text-base group-hover:bg-[#3A86FF] transition-colors">
+                                {{ cls.name|slice(0,1)|upper }}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-[#0F172A] text-base leading-tight">{{ cls.name }}</h4>
+                                <p class="text-xs text-slate-500 font-bold uppercase mt-0.5">{{ cls.students|length }} Étudiants</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs text-slate-300 group-hover:text-[#3A86FF]"></i>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12 text-slate-400 text-sm italic">Aucune classe.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- My Subjects -->
+            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8 flex flex-col h-[380px] relative overflow-hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-black text-[#0F172A] tracking-tight flex items-center gap-3">
+                        <span class="w-2 h-8 bg-[#D97706] rounded-full"></span>
+                        Matières
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 overflow-y-auto pr-1 flex-grow content-start custom-scroll">
+                    {% for subject in subjects %}
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#D97706]/30 hover:bg-white transition-all group">
+                        <div class="flex justify-between items-start mb-3">
+                            <i class="fas fa-book text-lg text-slate-300 group-hover:text-[#D97706] transition-colors"></i>
+                            <span class="text-[10px] font-bold uppercase bg-white px-2 py-1 rounded border border-slate-100 text-slate-500">Coef. {{ subject.coefficient }}</span>
+                        </div>
+                        <h4 class="font-bold text-[#0F172A] text-sm group-hover:text-[#D97706] transition-colors line-clamp-2 leading-snug">{{ subject.name }}</h4>
+                    </div>
+                    {% else %}
+                    <div class="col-span-2 text-center py-12 text-slate-400 text-sm italic">Aucune matière.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Schedule Table (Prominent & Readable) -->
+        <div class="bg-white rounded-[2.5rem] shadow-[0_20px_60px_-10px_rgba(15,23,42,0.1)] border border-slate-100 overflow-hidden mb-16">
+            <div class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
+                <h3 class="text-3xl font-black text-[#0F172A] tracking-tight flex items-center gap-3">
+                    <span class="w-3 h-10 bg-[#10B981] rounded-full shadow-lg shadow-emerald-200"></span>
+                    Emploi du Temps
+                </h3>
+                <div class="flex items-center gap-4">
+                    <span class="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-[#0F172A] text-sm font-bold uppercase tracking-widest shadow-sm">
+                        <i class="far fa-calendar-check mr-2 text-[#D97706]"></i> Semaine 42
+                    </span>
+                </div>
+            </div>
+            
+            <div class="p-8">
+                <!-- Grid System -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+                    {% set days = {'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi'} %}
+                    
+                    {% for dayEnglish, dayFrench in days %}
+                    {% set daySchedules = schedulesByDay[dayEnglish] ?? [] %}
+                    
+                    <div class="flex flex-col gap-4">
+                        <!-- Day Header -->
+                        <div class="text-center py-3 bg-[#0F172A] text-white rounded-xl font-heading font-bold uppercase tracking-widest text-xs shadow-md">
+                            {{ dayFrench }}
+                        </div>
+
+                        <!-- Schedule Items Container -->
+                        <div class="flex flex-col gap-3 min-h-[400px] {{ daySchedules|length == 0 ? 'bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200/60' : '' }}">
+                            {% for schedule in daySchedules %}
+                                {# Logic for Colors #}
+                                {% set typeColor = schedule.courseType == 'Cours' ? '#F59E0B' : (schedule.courseType == 'TP' ? '#3A86FF' : '#10B981') %}
+                                {% set textColor = schedule.courseType == 'Cours' ? '#0F172A' : '#FFFFFF' %}
+                                
+                                <div class="group relative bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer overflow-hidden flex-grow-0">
+                                    
+                                    <!-- Colored Stripe -->
+                                    <div class="absolute left-0 top-0 bottom-0 w-2" style="background-color: {{ typeColor }};"></div>
+                                    
+                                    <div class="pl-4">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded" style="background-color: {{ typeColor }}20; color: {{ typeColor }};">
+                                                {{ schedule.courseType }}
+                                            </span>
+                                            <span class="text-xs font-mono font-black text-[#0F172A] bg-slate-100 px-2 py-0.5 rounded">
+                                                {{ schedule.startTime|date('H:i') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <h4 class="font-black text-[#0F172A] text-base leading-tight mb-1 group-hover:text-[{{ typeColor }}] transition-colors">{{ schedule.subject.name }}</h4>
+                                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-50">
+                                            <p class="text-xs text-slate-500 font-bold uppercase">{{ schedule.classe.name }}</p>
+                                            <p class="text-xs text-slate-400 font-bold"><i class="fas fa-map-pin mr-1 text-[{{ typeColor }}]"></i>{{ schedule.room }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-12 text-center pb-8">
+             <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">&copy; 2026 CampusFlow Espace Enseignant</p>
+        </div>
+
     </div>
 </div>
-{% endblock %}
 
+<script>
+    // Entrance Animation
+    document.addEventListener('DOMContentLoaded', () => {
+        const elements = document.querySelectorAll('.group, h1, h3');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(15px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 40);
+        });
+    });
+</script>
+{% endblock %}

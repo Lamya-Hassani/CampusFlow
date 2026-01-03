@@ -6,10 +6,8 @@ use App\Repository\GradeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-// use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: GradeRepository::class)]
-// #[Broadcast]
 class Grade
 {
     #[ORM\Id]
@@ -37,6 +35,14 @@ class Grade
     #[ORM\ManyToOne(inversedBy: 'grades')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Subject $subject = null;
+
+    #[ORM\ManyToOne(inversedBy: 'grades')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $teacher = null;
+
+    #[ORM\ManyToOne(inversedBy: 'grades')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Classe $classe = null;
 
     public function __construct()
     {
@@ -107,4 +113,29 @@ class Grade
         $this->subject = $subject;
         return $this;
     }
+
+    public function getTeacher(): ?Teacher
+    {
+        return $this->teacher;
+    }
+
+    public function setTeacher(?Teacher $teacher): static
+    {
+        $this->teacher = $teacher;
+        return $this;
+    }
+
+
+
+    public function getClasse(): ?Classe
+    {
+        return $this->classe;
+    }
+
+    public function setClasse(?Classe $classe): static
+    {
+        $this->classe = $classe;
+        return $this;
+    }
+
 }

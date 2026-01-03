@@ -34,11 +34,15 @@ class DashboardController extends AbstractController
 
         $studentsByClass = $classeRepository->getStudentsCountByClass();
         $recentStudents = $studentRepository->findBy([], ['enrollmentDate' => 'DESC'], 5);
+        $success = $gradeRepository->getSuccessRate();
+        $monthlyAverages = $gradeRepository->getMonthlyAverages();
 
         return $this->render('admin/dashboard.html.twig', [
             'stats' => $stats,
             'studentsByClass' => $studentsByClass,
             'recentStudents' => $recentStudents,
+            'success' => $success,
+            'monthlyAverages' => $monthlyAverages,
         ]);
     }
 }

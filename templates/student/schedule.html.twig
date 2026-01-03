@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Emploi du Temps{% endblock %}
+
+{% block body %}
+<div class="flex justify-between items-end mb-8">
+    <div>
+        <h2 class="text-3xl font-extrabold text-slate-800">Emploi du Temps</h2>
+        <p class="text-slate-500 font-medium">Semaine de cours pour la classe <span class="text-blue-600 font-bold">{{ student.classe.name }}</span></p>
+    </div>
+    <div class="hidden md:block">
+        <button onclick="window.print()" class="bg-white text-slate-600 px-4 py-2 rounded-xl font-bold shadow-sm hover:text-blue-600 transition-colors">
+            <i class="fa-solid fa-print mr-2"></i> Imprimer
+        </button>
+    </div>
+</div>
+
+<!-- Calendar Container -->
+<div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+    <!-- Days Header (Desktop) -->
+    <div class="hidden md:grid grid-cols-6 border-b border-slate-200 bg-slate-50">
+        {% for day, label in {
+            'Monday': 'Lundi', 
+            'Tuesday': 'Mardi', 
+            'Wednesday': 'Mercredi', 
+            'Thursday': 'Jeudi', 
+            'Friday': 'Vendredi', 
+            'Saturday': 'Samedi'
+        } %}
+            <div class="py-4 text-center">
+                <span class="block text-sm font-bold text-slate-400 uppercase tracking-wider">{{ label }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Calendar Body -->
+    <div class="grid grid-cols-1 md:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-slate-200 min-h-[600px]">
+        {% for dayEnglish, dayFrench in {
+            'Monday': 'Lundi', 
+            'Tuesday': 'Mardi', 
+            'Wednesday': 'Mercredi', 
+            'Thursday': 'Jeudi', 
+            'Friday': 'Vendredi', 
+            'Saturday': 'Samedi'
+        } %}
+            <div class="relative p-2 md:p-4 group hover:bg-blue-50/30 transition-colors">
+                <!-- Mobile Day Header -->
+                <div class="md:hidden font-bold text-lg text-blue-600 mb-3 mt-2 border-b border-blue-100 pb-1">
+                    {{ dayFrench }}
+                </div>
+
+                <div class="space-y-3">
+                    {% for schedule in weekCalendar[dayEnglish] %}
+                        <!-- Class Card -->
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+                            <!-- Color Stripe based on Type -->
+                            <div class="absolute left-0 top-0 bottom-0 w-1.5 
+                                {% if schedule.courseType == 'TP' %}bg-purple-500
+                                {% elseif schedule.courseType == 'Cours' %}bg-blue-500
+                                {% else %}bg-yellow-400{% endif %}">
+                            </div>
+
+                            <div class="pl-3">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="text-xs font-extrabold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                                        {{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}
+                                    </span>
+                                </div>
+                                
+                                <h4 class="font-bold text-slate-800 text-sm leading-tight mb-1">
+                                    {{ schedule.subject.name }}
+                                </h4>
+                                
+                                <div class="flex flex-col text-xs text-slate-500 space-y-1">
+                                    <span class="flex items-center">
+                                        <i class="fa-solid fa-chalkboard-user w-4 text-center mr-1 text-blue-400"></i>
+                                        {{ schedule.teacher.lastName }}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fa-solid fa-location-dot w-4 text-center mr-1 text-yellow-500"></i>
+                                        Salle {{ schedule.room }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Empty State for the day -->
+                        <div class="h-full flex items-center justify-center min-h-[50px] md:min-h-full opacity-0 md:opacity-100">
+                            <div class="hidden md:block text-center p-4">
+                                <i class="fa-regular fa-calendar-xmark text-slate-200 text-3xl mb-2"></i>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-6 flex flex-wrap gap-4 text-sm text-slate-600 justify-center md:justify-start">
+    <div class="flex items-center">
+        <span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span> Cours Magistral
+    </div>
+    <div class="flex items-center">
+        <span class="w-3 h-3 rounded-full bg-purple-500 mr-2"></span> Travaux Pratiques (TP)
+    </div>
+    <div class="flex items-center">
+        <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span> Autre
+    </div>
+</div>
+{% endblock %}

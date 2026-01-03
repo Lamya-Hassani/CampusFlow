@@ -1,173 +1,130 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bulletin - {{ student.fullName }}{% endblock %}
-
 {% block body %}
-<div class="container mx-auto px-4 py-8">
-    <div class="mb-6 flex items-center justify-between">
+<div class="max-w-4xl mx-auto">
+    <!-- Toolbar -->
+    <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+        <h2 class="font-bold text-slate-700">Aperçu du Bulletin (Semestre {{ semester }})</h2>
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">
-                Bulletin de Notes - {{ student.fullName }}
-            </h1>
-            <p class="text-gray-600 mt-2">
-                Semestre {{ semester }} - Classe {{ student.classe.name }}
-            </p>
-        </div>
-        
-        <div class="flex gap-3">
-            <a href="{{ path('admin_student_edit_bulletin', {'id': student.id, 'semester': semester}) }}" 
-               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
-                <i class="fas fa-edit mr-2"></i>Modifier les notes
-            </a>
-            
+            <a href="{{ path('admin_student_show', {'id': student.id}) }}" class="text-slate-500 font-bold mr-4 hover:text-slate-700">Retour</a>
             <a href="{{ path('admin_student_bulletin_pdf', {'id': student.id, 'semester': semester}) }}" 
-               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
-               download>
-                <i class="fas fa-download mr-2"></i>Télécharger PDF
-            </a>
-            
-            <a href="{{ path('admin_student_show', {'id': student.id}) }}" 
-               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
-                <i class="fas fa-arrow-left mr-2"></i>Retour
+               onclick="return confirm('Confirmer le téléchargement du PDF officiel ?')"
+               class="bg-campus-yellow text-slate-900 px-6 py-2 rounded-full font-bold shadow-md hover:bg-yellow-300 transition-colors">
+               <i class="fa-solid fa-download mr-2"></i> Télécharger PDF
             </a>
         </div>
     </div>
 
-    {# Preview matching PDF exactly #}
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-5xl mx-auto text-sm" style="font-family: 'DejaVu Sans', Arial, sans-serif;">
+    <!-- THE PAPER (Simulates A4) -->
+    <div class="bg-white p-[1cm] shadow-2xl mx-auto text-black" style="min-height: 29.7cm; width: 21cm; font-family: 'Times New Roman', serif;">
         
-        {# ==== HEADER (3 zones) ==== #}
-        <table class="w-full border-collapse mb-4">
-            <tr>
-                <td class="text-left align-top" style="width: 33%;">
-                    Royaume du Maroc<br />
-                    Ministère de l'Éducation Nationale<br />
-                    Académie …<br />
-                    Délégation …<br />
-                    Établissement …
-                </td>
-                <td class="text-center align-top" style="width: 34%;">
-                    <strong>Bulletin du {{ semester }}ème Semestre</strong><br />
-                    Année scolaire {{ "now"|date("Y") }}/{{ "now"|date("Y") + 1 }}<br />
-                    Classe : {{ student.classe.name }}<br />
-                    CNE : {{ student.cne }}
-                </td>
-                <td class="text-right align-top" style="width: 33%;">
-                    Code établissement : ……<br />
-                    N° d'ordre : ……<br />
-                </td>
-            </tr>
-        </table>
+        <!-- Header -->
+        <div class="text-center mb-8 border-b-2 border-black pb-4">
+            <h3 class="uppercase font-bold text-sm tracking-widest mb-1">Royaume du Maroc</h3>
+            <h4 class="uppercase font-bold text-xs">Ministère de l'Éducation Nationale</h4>
+            <div class="flex justify-between items-end mt-6">
+                <div class="text-left text-sm">
+                    <p><strong>Établissement :</strong> CampusFlow Academy</p>
+                    <p><strong>Année Scolaire :</strong> {{ student.classe.academicYear }}</p>
+                </div>
+                <div class="text-right text-sm">
+                    <p><strong>Ville :</strong> Casablanca</p>
+                </div>
+            </div>
+        </div>
 
-        {# ==== IDENTITÉ ÉLÈVE ==== #}
-        <table class="w-full border-collapse border border-black mt-4 mb-6">
-            <thead class="bg-gray-200">
-                <tr>
-                    <th class="border border-black px-3 py-2 text-center">Nom et Prénom</th>
-                    <th class="border border-black px-3 py-2 text-center">Date de naissance</th>
-                    <th class="border border-black px-3 py-2 text-center">Lieu</th>
-                    <th class="border border-black px-3 py-2 text-center">Sexe</th>
-                    <th class="border border-black px-3 py-2 text-center">Redoublant</th>
+        <!-- Student Info Box -->
+        <div class="border border-black p-4 mb-6 flex justify-between bg-gray-50">
+            <div>
+                <p class="mb-1"><strong>Nom & Prénom :</strong> {{ student.lastName|upper }} {{ student.firstName }}</p>
+                <p class="mb-1"><strong>N° CNE :</strong> {{ student.cne }}</p>
+                <p><strong>Date de Naissance :</strong> {{ student.birthDate|date('d/m/Y') }}</p>
+            </div>
+            <div class="text-right">
+                <p class="mb-1"><strong>Classe :</strong> {{ student.classe.name }}</p>
+                <p><strong>Niveau :</strong> {{ student.classe.level }}</p>
+                <p><strong>Semestre :</strong> {{ semester }}</p>
+            </div>
+        </div>
+
+        <!-- Grades Table -->
+        <table class="w-full border-collapse border border-black text-sm mb-6">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-black p-2 text-left w-1/3">Matière</th>
+                    <th class="border border-black p-2 text-center w-16">Coef.</th>
+                    <th class="border border-black p-2 text-center w-16">Note /20</th>
+                    <th class="border border-black p-2 text-center w-16">Produit</th>
+                    <th class="border border-black p-2 text-left">Appréciations / Observations</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="border border-black px-3 py-2 text-center">{{ student.fullName }}</td>
-                    <td class="border border-black px-3 py-2 text-center">
-                        {{ student.birthDate is defined ? student.birthDate|date('d/m/Y') : '' }}
-                    </td>
-                    <td class="border border-black px-3 py-2 text-center">{{ student.birthPlace ?? '' }}</td>
-                    <td class="border border-black px-3 py-2 text-center"></td>
-                    <td class="border border-black px-3 py-2 text-center"></td>
-                </tr>
-            </tbody>
-        </table>
-
-        {# ==== GRAND TABLEAU DES NOTES ==== #}
-        <table class="w-full border-collapse border border-black mb-6">
-            <thead class="bg-gray-200">
-                <tr>
-                    <th rowspan="2" class="border border-black px-3 py-2 align-middle" style="width: 20%;">Matières</th>
-                    <th colspan="3" class="border border-black px-2 py-1" style="width: 18%;">Contrôles continus</th>
-                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 8%;">Exam</th>
-                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 7%;">Coef</th>
-                    <th rowspan="2" class="border border-black px-2 py-2 align-middle" style="width: 9%;">Moyenne</th>
-                    <th rowspan="2" class="border border-black px-3 py-2 align-middle">Observations</th>
-                </tr>
-                <tr>
-                    <th class="border border-black px-2 py-1" style="width: 6%;">1</th>
-                    <th class="border border-black px-2 py-1" style="width: 6%;">2</th>
-                    <th class="border border-black px-2 py-1" style="width: 6%;">3</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for grade in grades %}
-                <tr>
-                    <td class="border border-black px-3 py-2 text-left">{{ grade.subject.name }}</td>
-                    <td class="border border-black px-2 py-2 text-center"></td>
-                    <td class="border border-black px-2 py-2 text-center"></td>
-                    <td class="border border-black px-2 py-2 text-center"></td>
-                    <td class="border border-black px-2 py-2 text-center">
-                        {{ grade.exam is defined ? grade.exam|number_format(2) : grade.value|number_format(2) }}
-                    </td>
-                    <td class="border border-black px-2 py-2 text-center">{{ grade.subject.coefficient|number_format(1) }}</td>
-                    <td class="border border-black px-2 py-2 text-center">{{ grade.value|number_format(2) }}</td>
-                    <td class="border border-black px-3 py-2 text-center"></td>
-                </tr>
+                {% set totalCoef = 0 %}
+                {% set totalPoints = 0 %}
+                
+                {% for item in gradesData %}
+                    {% set produit = item.grade.value * item.subject.coefficient %}
+                    {% set totalCoef = totalCoef + item.subject.coefficient %}
+                    {% set totalPoints = totalPoints + produit %}
+                    
+                    <tr>
+                        <td class="border border-black p-2 font-bold">{{ item.subject.name }}</td>
+                        <td class="border border-black p-2 text-center">{{ item.subject.coefficient }}</td>
+                        <td class="border border-black p-2 text-center font-mono 
+                            {% if item.grade.value < 10 %}text-red-600{% endif %}">
+                            {{ item.grade.value|number_format(2, ',', ' ') }}
+                        </td>
+                        <td class="border border-black p-2 text-center font-mono">{{ produit|number_format(2, ',', ' ') }}</td>
+                        <td class="border border-black p-2 text-xs italic text-gray-600">
+                            {% if item.grade.value >= 16 %}Très Bien
+                            {% elseif item.grade.value >= 14 %}Bien
+                            {% elseif item.grade.value >= 12 %}Assez Bien
+                            {% elseif item.grade.value >= 10 %}Passable
+                            {% else %}Insuffisant{% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
-                <tr class="bg-gray-100 font-bold">
-                    <td class="border border-black px-3 py-2 text-right">
-                        <strong>Total / Moyenne générale</strong>
-                    </td>
-                    <td colspan="3" class="border border-black"></td>
-                    <td class="border border-black"></td>
-                    <td class="border border-black px-2 py-2 text-center">
-                        <strong>{{ totalCoef|number_format(1) }}</strong>
-                    </td>
-                    <td class="border border-black px-2 py-2 text-center">
-                        <strong>{{ average|number_format(2) }}</strong>
-                    </td>
-                    <td class="border border-black"></td>
-                </tr>
             </tbody>
+            <tfoot>
+                <tr class="bg-gray-100 font-bold">
+                    <td class="border border-black p-2 text-right uppercase">Total</td>
+                    <td class="border border-black p-2 text-center">{{ totalCoef }}</td>
+                    <td class="border border-black p-2 bg-gray-300"></td>
+                    <td class="border border-black p-2 text-center">{{ totalPoints|number_format(2, ',', ' ') }}</td>
+                    <td class="border border-black p-2"></td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td colspan="3" class="border border-black p-3 text-right uppercase font-bold text-lg">Moyenne Générale</td>
+                    <td colspan="2" class="border border-black p-3 text-center font-bold text-xl text-blue-900">
+                        {{ (totalPoints / (totalCoef ?: 1))|number_format(2, ',', ' ') }} / 20
+                    </td>
+                </tr>
+            </tfoot>
         </table>
 
-        {# ==== BAS DE PAGE : three bordered sections ==== #}
-        <table class="w-full border-collapse mb-3">
-            <tr>
-                <td class="border border-black px-3 py-2 align-top" style="width: 40%;">
-                    <strong>Appréciation du professeur principal :</strong><br />
-                    <div style="height: 120px;"></div>
-                </td>
-                <td style="width: 2%;"></td>
-                <td class="border border-black px-3 py-2 align-top text-center" style="width: 28%;">
-                    <strong>Décision du conseil :</strong><br /><br />
-                    <div class="text-left inline-block">
-                        <label class="flex items-center gap-2 text-sm mb-2">
-                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
-                            Admis
-                        </label>
-                        <label class="flex items-center gap-2 text-sm mb-2">
-                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
-                            Ajourné
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <span class="inline-block border border-black" style="width: 12px; height: 12px;"></span>
-                            Redouble
-                        </label>
-                    </div>
-                </td>
-                <td style="width: 2%;"></td>
-                <td class="border border-black px-3 py-2 align-top" style="width: 28%;">
-                    <strong>Visa des parents :</strong><br />
-                    <div style="height: 120px;"></div>
-                </td>
-            </tr>
-        </table>
+        <!-- Signatures Area -->
+        <div class="grid grid-cols-3 gap-4 mt-12 h-40">
+            <div class="border border-black p-2 h-full relative">
+                <p class="text-xs font-bold underline mb-2">Décision du Conseil :</p>
+                <div class="absolute bottom-2 left-2 text-xs italic">
+                    {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}
+                        Admis(e)
+                    {% else %}
+                        Non Admis(e)
+                    {% endif %}
+                </div>
+            </div>
+            <div class="border border-black p-2 h-full">
+                <p class="text-xs font-bold underline mb-2">Visa des Parents :</p>
+            </div>
+            <div class="border border-black p-2 h-full text-center">
+                <p class="text-xs font-bold underline mb-8">Le Directeur :</p>
+                <p class="text-xs text-gray-400 italic">(Cachet et Signature)</p>
+            </div>
+        </div>
 
-        {# ==== SIGNATURE DU DIRECTEUR ==== #}
-        <div class="text-left mt-3">
-            <strong>Le Directeur</strong>
+        <div class="mt-8 text-center text-xs text-gray-500">
+            Fait à Casablanca, le {{ "now"|date("d/m/Y") }}
         </div>
     </div>
 </div>

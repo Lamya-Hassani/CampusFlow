@@ -47,11 +47,15 @@ class Teacher
     #[ORM\OneToMany(targetEntity: Classe::class, mappedBy: 'supervisor')]
     private Collection $supervisedClasses;
 
+    #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Grade::class)]
+    private Collection $grades;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
         $this->schedules = new ArrayCollection();
         $this->supervisedClasses = new ArrayCollection();
+        $this->grades = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,7 +71,6 @@ class Teacher
     public function setUser(User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -79,7 +82,6 @@ class Teacher
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -91,7 +93,6 @@ class Teacher
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -103,7 +104,6 @@ class Teacher
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
-
         return $this;
     }
 
@@ -115,7 +115,6 @@ class Teacher
     public function setSpecialty(string $specialty): static
     {
         $this->specialty = $specialty;
-
         return $this;
     }
 
@@ -127,7 +126,6 @@ class Teacher
     public function setGrade(string $grade): static
     {
         $this->grade = $grade;
-
         return $this;
     }
 
@@ -139,7 +137,6 @@ class Teacher
     public function setProfilePicture(?string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
-
         return $this;
     }
 
@@ -156,14 +153,12 @@ class Teacher
         if (!$this->subjects->contains($subject)) {
             $this->subjects->add($subject);
         }
-
         return $this;
     }
 
     public function removeSubject(Subject $subject): static
     {
         $this->subjects->removeElement($subject);
-
         return $this;
     }
 
@@ -181,7 +176,6 @@ class Teacher
             $this->schedules->add($schedule);
             $schedule->setTeacher($this);
         }
-
         return $this;
     }
 
@@ -192,7 +186,6 @@ class Teacher
                 $schedule->setTeacher(null);
             }
         }
-
         return $this;
     }
 
@@ -210,7 +203,6 @@ class Teacher
             $this->supervisedClasses->add($supervisedClass);
             $supervisedClass->setSupervisor($this);
         }
-
         return $this;
     }
 
@@ -221,7 +213,33 @@ class Teacher
                 $supervisedClass->setSupervisor(null);
             }
         }
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Grade>
+     */
+    public function getGrades(): Collection
+    {
+        return $this->grades;
+    }
+
+    public function addGrade(Grade $grade): static
+    {
+        if (!$this->grades->contains($grade)) {
+            $this->grades->add($grade);
+            $grade->setTeacher($this);
+        }
+        return $this;
+    }
+
+    public function removeGrade(Grade $grade): static
+    {
+        if ($this->grades->removeElement($grade)) {
+            if ($grade->getTeacher() === $this) {
+                $grade->setTeacher(null);
+            }
+        }
         return $this;
     }
 

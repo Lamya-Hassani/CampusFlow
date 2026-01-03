@@ -29,17 +29,24 @@ class DashboardController extends AbstractController
 
         // Group schedules by day
         $schedulesByDay = [];
+        $classes = [];
+        $subjects = [];
         foreach ($schedules as $schedule) {
             $day = $schedule->getDayOfWeek();
             if (!isset($schedulesByDay[$day])) {
                 $schedulesByDay[$day] = [];
             }
             $schedulesByDay[$day][] = $schedule;
+
+            $classes[$schedule->getClasse()->getName()] = $schedule->getClasse();
+            $subjects[$schedule->getSubject()->getName()] = $schedule->getSubject();
         }
 
         return $this->render('teacher/dashboard.html.twig', [
             'teacher' => $teacher,
             'schedulesByDay' => $schedulesByDay,
+            'classes' => $classes,
+            'subjects' => $subjects,
         ]);
     }
 }

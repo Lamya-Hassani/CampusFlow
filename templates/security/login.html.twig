@@ -1,305 +1,295 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion - CampusFlow{% endblock %}
+{% block title %}Portail d'Accès - CampusFlow{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* --- Login Specific Animations --- */
+        @keyframes starry {
+            0% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+            100% { opacity: 0.3; transform: scale(1); }
+        }
+        .animate-star { animation: starry 4s infinite ease-in-out; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label {
+            transform: translateY(-24px) scale(0.85);
+            color: #D97706; /* Amber Gold */
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#2F4F73] via-[#1E3A5F] to-[#2F4F73] relative overflow-hidden">
+<!-- 
+    PALETTE:
+    - Primary: Midnight Blue (#0F172A)
+    - Accent: Amber Gold (#D97706)
+    - Base: Cream Paper (#FFFBEB)
+-->
+<div class="min-h-screen grid lg:grid-cols-2 font-sans overflow-hidden">
 
-    {# ===== BACKGROUND ANIMATIONS ===== #}
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <!-- Livres flottants -->
-        <div class="education-item book book-1">📚</div>
-        <div class="education-item book book-2">📖</div>
-        <div class="education-item book book-3">📕</div>
-        <div class="education-item book book-4">📘</div>
-        <div class="education-item book book-5">📗</div>
+    {# ============================================
+       LEFT PANEL: THE VISION (Midnight Blue)
+       ============================================ #}
+    <div class="relative bg-[#0F172A] hidden lg:flex flex-col justify-between p-12 overflow-hidden text-white">
+        <!-- Abstract Background -->
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]"></div>
+        
+        <!-- Constellation (CSS Simplified) -->
+        <div class="absolute top-20 right-20 w-1 h-1 bg-[#F59E0B] rounded-full animate-star"></div>
+        <div class="absolute bottom-40 left-20 w-2 h-2 bg-[#E11D48] rounded-full animate-star animation-delay-2000 opacity-60"></div>
+        <svg class="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+             <line x1="20%" y1="20%" x2="50%" y2="50%" stroke="#F59E0B" stroke-width="0.5" />
+             <line x1="80%" y1="80%" x2="50%" y2="50%" stroke="#3A86FF" stroke-width="0.5" />
+             <circle cx="50%" cy="50%" r="300" fill="url(#loginGradient)" fill-opacity="0.1" />
+             <defs>
+                 <radialGradient id="loginGradient">
+                     <stop offset="0%" stop-color="#3A86FF" />
+                     <stop offset="100%" stop-color="transparent" />
+                 </radialGradient>
+             </defs>
+        </svg>
 
-        <!-- Diplômes et certificats -->
-        <div class="education-item diploma diploma-1">🎓</div>
-        <div class="education-item diploma diploma-2">📜</div>
-        <div class="education-item diploma diploma-3">🏆</div>
-
-        <!-- Outils scolaires -->
-        <div class="education-item tool tool-1">✏️</div>
-        <div class="education-item tool tool-2">📝</div>
-        <div class="education-item tool tool-3">🖊️</div>
-        <div class="education-item tool tool-4">📐</div>
-        <div class="education-item tool tool-5">🔬</div>
-
-        <!-- Symboles académiques -->
-        <div class="education-item symbol symbol-1">🎯</div>
-        <div class="education-item symbol symbol-2">💡</div>
-        <div class="education-item symbol symbol-3">⭐</div>
-        <div class="education-item symbol symbol-4">🌟</div>
-
-        <!-- Formules -->
-        <div class="formula formula-1">E=mc²</div>
-        <div class="formula formula-2">π=3.14</div>
-        <div class="formula formula-3">a²+b²=c²</div>
-        <div class="formula formula-4">∑</div>
-        <div class="formula formula-5">∫</div>
-
-        <!-- Lettres / notes -->
-        <div class="letter letter-1">A+</div>
-        <div class="letter letter-2">100%</div>
-        <div class="letter letter-3">ABC</div>
-
-        <!-- Bulles dorées -->
-        <div class="absolute top-10 left-20 w-96 h-96 bg-[#f2d57c] rounded-full filter blur-3xl opacity-20 animate-blob"></div>
-        <div class="absolute bottom-10 right-10 w-[500px] h-[500px] bg-[#f2d57c] rounded-full filter blur-3xl opacity-15 animate-blob animation-delay-3000"></div>
-    </div>
-
-    {# ===== LOGIN CARD ===== #}
-    <div class="relative w-full max-w-md mx-4 z-10 py-8">
-        <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6">
-            <div class="text-center mb-5">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#2F4F73] to-[#1E3A5F] rounded-full mb-3 shadow-lg animate-bounce-smooth">
-                    <span class="text-3xl">🎓</span>
+        <!-- Content -->
+        <div class="relative z-10">
+            <a href="{{ path('app_home') }}" class="flex items-center gap-3 w-fit group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#D97706] to-[#92400E] flex items-center justify-center text-white shadow-xl border border-white/10 group-hover:scale-110 transition-transform">
+                    <span class="text-xl">🏛️</span>
                 </div>
-                <h1 class="text-2xl font-extrabold text-[#2F4F73] mb-1">CampusFlow</h1>
-                <p class="text-gray-600 text-sm font-medium">Système de gestion académique</p>
-            </div>
-
-            {% if error %}
-                <div class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-lg">
-                    <p class="text-red-700 text-xs">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
-                </div>
-            {% endif %}
-
-            {% if app.user %}
-                <div class="mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <p class="text-blue-700 text-xs">Vous êtes connecté en tant que {{ app.user.userIdentifier }}</p>
-                </div>
-            {% endif %}
-
-            <form method="post">
-                <!-- Email -->
-                <div class="mb-4">
-                    <label for="inputEmail" class="block text-xs font-semibold text-[#2F4F73] mb-1.5">
-                        Adresse email
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
-                            </svg>
-                        </div>
-                        <input
-                            type="email"
-                            value="{{ last_username }}"
-                            name="email"
-                            id="inputEmail"
-                            class="w-full pl-10 pr-3 py-2.5 text-sm border-2 border-gray-200 rounded-lg focus:border-[#f2d57c] focus:ring-2 focus:ring-[#f2d57c]/20 outline-none transition-all"
-                            autocomplete="email"
-                            required
-                            autofocus
-                            placeholder="votre.email@campusflow.com"
-                        >
-                    </div>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="inputPassword" class="block text-xs font-semibold text-[#2F4F73] mb-1.5">
-                        Mot de passe
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                            </svg>
-                        </div>
-                        <input
-                            type="password"
-                            name="password"
-                            id="inputPassword"
-                            class="w-full pl-10 pr-3 py-2.5 text-sm border-2 border-gray-200 rounded-lg focus:border-[#f2d57c] focus:ring-2 focus:ring-[#f2d57c]/20 outline-none transition-all"
-                            autocomplete="current-password"
-                            required
-                            placeholder="••••••••"
-                        >
-                    </div>
-                </div>
-
-                <!-- Remember -->
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="_remember_me"
-                            id="remember_me"
-                            class="w-3.5 h-3.5 text-[#f2d57c] bg-gray-100 border-gray-300 rounded focus:ring-[#f2d57c] focus:ring-2"
-                        >
-                        <label for="remember_me" class="ml-2 text-xs text-gray-600">
-                            Se souvenir de moi
-                        </label>
-                    </div>
-                    <a href="#" class="text-xs font-medium text-[#f2d57c] hover:text-[#e3c66d] transition">
-                        Mot de passe oublié ?
-                    </a>
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <!-- Submit -->
-                <button
-                    type="submit"
-                    class="w-full bg-gradient-to-r from-[#f2d57c] to-[#e3c66d] text-[#2F4F73] font-bold py-3 rounded-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center text-sm"
-                >
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                    </svg>
-                    Se connecter
-                </button>
-
-                <div class="mt-4 flex items-center justify-center text-xs text-gray-500">
-                    <svg class="w-3 h-3 mr-1 text-[#f2d57c]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                    </svg>
-                    Vos données sont sécurisées
-                </div>
-            </form>
-
-            <div class="mt-5 text-center">
-                <a href="{{ path('app_home') }}" class="inline-flex items-center text-xs text-gray-600 hover:text-[#f2d57c] transition font-medium">
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    Retour à l'accueil
-                </a>
-            </div>
+                <span class="font-heading font-bold text-2xl tracking-tight text-white">
+                    Campus<span class="text-[#F59E0B]">Flow</span>
+                </span>
+            </a>
         </div>
 
-        <div class="text-center mt-4">
-            <p class="text-white text-xs drop-shadow-lg">
-                Pas encore de compte ?
-                <a href="#" class="font-bold text-[#f2d57c] hover:text-white transition ml-1">
-                    Contactez l'administration
-                </a>
+        <div class="relative z-10 max-w-md">
+            <div class="mb-6 w-16 h-1 bg-[#F59E0B]"></div>
+            <h1 class="text-5xl font-heading font-bold leading-tight mb-6">
+                Le Portail de <br/> <span class="text-[#F59E0B]">l'Excellence.</span>
+            </h1>
+            <p class="text-slate-400 text-lg leading-relaxed">
+                Bienvenue dans votre espace numérique. Suivez vos performances, accédez à vos ressources et connectez-vous au futur de l'éducation.
             </p>
         </div>
+
+        <div class="relative z-10 text-xs text-slate-500 uppercase tracking-widest font-bold">
+            &copy; {{ "now"|date("Y") }} CampusFlow Secure System.
+        </div>
     </div>
 
-    {# ===== CSS ANIMATIONS ===== #}
-    <style>
-        .education-item {
-            position: absolute;
-            font-size: 2.5rem;
-            opacity: 0.6;
-            filter: drop-shadow(0 0 10px rgba(242, 213, 124, 0.5));
-        }
+    {# ============================================
+       RIGHT PANEL: THE GATE (Login Form)
+       ============================================ #}
+    <div class="bg-[#FFFBEB] flex items-center justify-center p-6 relative overflow-hidden">
+        <!-- Interactive Background Canvas -->
+        <canvas id="loginCanvas" class="absolute inset-0 w-full h-full opacity-30 pointer-events-none"></canvas>
 
-        /* Books */
-        .book { animation: float-book 15s infinite ease-in-out; }
-        .book-1 { top: 10%; left: 15%; animation-delay: 0s; font-size: 3rem; }
-        .book-2 { top: 60%; left: 85%; animation-delay: 2s; font-size: 2.8rem; }
-        .book-3 { top: 80%; left: 20%; animation-delay: 4s; font-size: 3.2rem; }
-        .book-4 { top: 30%; left: 75%; animation-delay: 1s; font-size: 2.5rem; }
-        .book-5 { top: 50%; left: 10%; animation-delay: 3s; font-size: 2.7rem; }
+        <!-- Mobile Back Link -->
+        <a href="{{ path('app_home') }}" class="absolute top-6 left-6 lg:hidden text-slate-400 hover:text-[#0F172A] transition-colors z-20">
+            <i class="fas fa-arrow-left mr-2"></i> Retour
+        </a>
 
-        @keyframes float-book {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
-            25%      { transform: translateY(-40px) rotate(5deg); opacity: 0.8; }
-            50%      { transform: translateY(-80px) rotate(-5deg); opacity: 0.5; }
-            75%      { transform: translateY(-40px) rotate(3deg); opacity: 0.7; }
-        }
+        <div class="w-full max-w-md relative z-10">
+            <!-- Mobile Header -->
+            <div class="lg:hidden text-center mb-10">
+                <div class="inline-flex items-center gap-2 mb-4">
+                    <span class="text-3xl">🏛️</span>
+                    <span class="font-heading font-bold text-3xl text-[#0F172A]">
+                        Campus<span class="text-[#F59E0B]">Flow</span>
+                    </span>
+                </div>
+                <p class="text-slate-500">Connectez-vous à votre espace.</p>
+            </div>
 
-        /* Diplomas */
-        .diploma { animation: sway-diploma 12s infinite ease-in-out; }
-        .diploma-1 { top: 20%; left: 50%; animation-delay: 0s; font-size: 3.5rem; }
-        .diploma-2 { top: 70%; left: 60%; animation-delay: 2s; font-size: 3rem; }
-        .diploma-3 { top: 40%; left: 90%; animation-delay: 4s; font-size: 3.2rem; }
+            <!-- Card Logic -->
+            <div class="bg-white/80 backdrop-blur-md p-8 md:p-12 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-white/60 relative">
+                
+                <h2 class="text-2xl font-bold text-[#0F172A] mb-8 text-center lg:text-left">Connexion</h2>
 
-        @keyframes sway-diploma {
-            0%,100% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0.7; }
-            33%     { transform: translateX(-30px) translateY(-50px) rotate(-10deg); opacity: 0.9; }
-            66%     { transform: translateX(30px) translateY(-30px) rotate(10deg); opacity: 0.6; }
-        }
+                {% if error %}
+                    <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r text-sm flex items-start gap-3" role="alert">
+                        <i class="fas fa-exclamation-circle mt-0.5"></i>
+                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    </div>
+                {% endif %}
 
-        /* Tools */
-        .tool { animation: rotate-tool 10s infinite ease-in-out; }
-        .tool-1 { top: 15%; left: 35%; animation-delay: 0s; }
-        .tool-2 { top: 55%; left: 25%; animation-delay: 1s; }
-        .tool-3 { top: 85%; left: 75%; animation-delay: 2s; }
-        .tool-4 { top: 25%; left: 80%; animation-delay: 1.5s; }
-        .tool-5 { top: 65%; left: 50%; animation-delay: 2.5s; }
+                {% if app.user %}
+                    <div class="bg-blue-50 border-l-4 border-[#3A86FF] text-[#0F172A] p-4 mb-6 rounded-r text-sm">
+                        Vous êtes déjà connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.
+                        <a href="{{ path('app_logout') }}" class="block mt-2 text-[#3A86FF] font-bold hover:underline">Se déconnecter</a>
+                    </div>
+                {% endif %}
 
-        @keyframes rotate-tool {
-            0%,100% { transform: rotate(0deg) translateY(0); opacity: 0.6; }
-            50%     { transform: rotate(180deg) translateY(-60px); opacity: 0.9; }
-        }
+                <form method="post">
+                    <!-- Email -->
+                    <div class="input-group relative mb-6">
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" autocomplete="email" required autofocus
+                               class="w-full h-14 px-4 pt-2 bg-white border border-slate-200 rounded-lg text-[#0F172A] focus:outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706] transition-all placeholder-transparent shadow-sm peer"
+                               placeholder="Email">
+                        <label for="inputEmail" class="absolute left-3 top-4 text-slate-400 text-sm transition-all pointer-events-none origin-left peer-focus:-translate-y-7 peer-focus:scale-90 peer-focus:text-[#D97706] peer-not-placeholder-shown:-translate-y-7 peer-not-placeholder-shown:scale-90 peer-not-placeholder-shown:text-[#D97706] bg-white px-1">
+                            Email académique
+                        </label>
+                        <i class="fas fa-envelope absolute right-4 top-5 text-slate-300"></i>
+                    </div>
 
-        /* Symbols */
-        .symbol { animation: pulse-symbol 8s infinite ease-in-out; }
-        .symbol-1 { top: 35%; left: 5%;  animation-delay: 0s;  font-size: 2.8rem; }
-        .symbol-2 { top: 75%; left: 40%; animation-delay: 1s;  font-size: 3rem; }
-        .symbol-3 { top: 45%; left: 95%; animation-delay: 2s;  font-size: 2.5rem; }
-        .symbol-4 { top: 10%; left: 65%; animation-delay: 1.5s;font-size: 2.7rem; }
+                    <!-- Password -->
+                    <div class="input-group relative mb-8">
+                        <input type="password" name="password" id="inputPassword" autocomplete="current-password" required
+                               class="w-full h-14 px-4 pt-2 bg-white border border-slate-200 rounded-lg text-[#0F172A] focus:outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706] transition-all placeholder-transparent shadow-sm peer"
+                               placeholder="Mot de passe">
+                        <label for="inputPassword" class="absolute left-3 top-4 text-slate-400 text-sm transition-all pointer-events-none origin-left peer-focus:-translate-y-7 peer-focus:scale-90 peer-focus:text-[#D97706] peer-not-placeholder-shown:-translate-y-7 peer-not-placeholder-shown:scale-90 peer-not-placeholder-shown:text-[#D97706] bg-white px-1">
+                            Mot de passe
+                        </label>
+                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-5 text-slate-300 hover:text-[#0F172A] transition-colors focus:outline-none">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
 
-        @keyframes pulse-symbol {
-            0%,100% { transform: scale(1);   opacity: 0.5; }
-            50%     { transform: scale(1.3); opacity: 1;   }
-        }
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-        /* Formulas */
-        .formula {
-            position: absolute;
-            font-family: 'Courier New', monospace;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #f2d57c;
-            opacity: 0.5;
-            animation: drift-formula 20s infinite ease-in-out;
-            text-shadow: 0 0 15px rgba(242, 213, 124, 0.7);
-        }
-        .formula-1 { top: 12%; left: 25%; animation-delay: 0s; }
-        .formula-2 { top: 48%; left: 70%; animation-delay: 3s; }
-        .formula-3 { top: 82%; left: 35%; animation-delay: 6s; }
-        .formula-4 { top: 28%; left: 88%; animation-delay: 2s; font-size: 2.5rem; }
-        .formula-5 { top: 68%; left: 12%; animation-delay: 4s; font-size: 2.5rem; }
+                    <div class="flex items-center justify-between mb-8 text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-[#0F172A] transition-colors">
+                            <input type="checkbox" name="_remember_me" class="w-4 h-4 rounded border-slate-300 text-[#D97706] focus:ring-[#D97706]">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="font-bold text-[#D97706] hover:text-[#B45309] transition-colors">Mot de passe oublié ?</a>
+                    </div>
 
-        @keyframes drift-formula {
-            0%,100% { transform: translate(0,0);    opacity: 0.5; }
-            25%     { transform: translate(40px,-60px); opacity: 0.8; }
-            50%     { transform: translate(-20px,-120px);opacity: 0.3; }
-            75%     { transform: translate(30px,-80px); opacity: 0.7; }
-        }
+                    <button type="submit" class="w-full py-4 bg-[#0F172A] text-white font-bold rounded-lg shadow-lg hover:bg-[#1E293B] hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3 group">
+                        Accéder à l'Espace
+                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform text-[#F59E0B]"></i>
+                    </button>
+                </form>
 
-        /* Letters */
-        .letter {
-            position: absolute;
-            font-family: 'Arial Black', sans-serif;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #f2d57c;
-            opacity: 0.6;
-            animation: bounce-letter 6s infinite ease-in-out;
-            text-shadow: 0 0 20px rgba(242, 213, 124, 0.8);
-        }
-        .letter-1 { top: 18%; left: 55%; animation-delay: 0s; }
-        .letter-2 { top: 58%; left: 35%; animation-delay: 1s; }
-        .letter-3 { top: 78%; left: 85%; animation-delay: 2s; }
-
-        @keyframes bounce-letter {
-            0%,100% { transform: translateY(0)  scale(1);   opacity: 0.6; }
-            50%     { transform: translateY(-50px)scale(1.2); opacity: 1; }
-        }
-
-        /* Blob bubbles */
-        @keyframes blob {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33%     { transform: translate(50px,-70px) scale(1.2); }
-            66%     { transform: translate(-30px,50px) scale(0.9); }
-        }
-        .animate-blob { animation: blob 12s infinite ease-in-out; }
-        .animation-delay-3000 { animation-delay: 6s; }
-
-        /* Logo bounce */
-        @keyframes bounce-smooth {
-            0%,100% { transform: translateY(0); }
-            50%     { transform: translateY(-10px); }
-        }
-        .animate-bounce-smooth { animation: bounce-smooth 2.5s infinite ease-in-out; }
-    </style>
+                <div class="mt-8 text-center text-sm text-slate-400">
+                    Pas encore de compte ? <a href="#" class="text-[#0F172A] font-bold hover:underline">Contacter l'administration</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('inputPassword');
+        const toggleIcon = document.getElementById('toggleIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.replace('fa-eye', 'fa-eye');
+        }
+    }
+
+    // --- Background Particles Animation (Playful School Theme) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('loginCanvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        
+        // School/Playful Icons (Emojis)
+        const icons = ['📐', '🔬', '🎨', '🎵', '⚽', '📚', '✏️', '🧬', '💻', '🎒', '🧠', '🌍'];
+        
+        function resize() {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+        }
+        
+        class Floater {
+            constructor() {
+                this.text = icons[Math.floor(Math.random() * icons.length)];
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                // Random playful velocity
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.size = Math.random() * 20 + 20; // 20px to 40px
+                this.angle = Math.random() * Math.PI * 2;
+                this.spinSpeed = (Math.random() - 0.5) * 0.05;
+                this.opacity = Math.random() * 0.3 + 0.1; // Subtle transparency
+            }
+
+            update(mouseX, mouseY) {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.angle += this.spinSpeed;
+
+                // Wall Bounce
+                if (this.x < -50 || this.x > width + 50) this.vx *= -1;
+                if (this.y < -50 || this.y > height + 50) this.vy *= -1;
+
+                // Mouse Repel (Playful "Run Away")
+                if(mouseX && mouseY) {
+                    const dx = this.x - mouseX;
+                    const dy = this.y - mouseY;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 150) {
+                        const force = (150 - dist) / 150;
+                        this.vx += (dx / dist) * force * 0.5;
+                        this.vy += (dy / dist) * force * 0.5;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.font = `${this.size}px "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#D97706'; // Gets overridden by emoji color usually, but good fallback
+                ctx.fillText(this.text, 0, 0);
+                
+                // Add a faint glow/shadow for depth
+                // ctx.shadowBlur = 10;
+                // ctx.shadowColor = "rgba(217, 119, 6, 0.2)";
+                
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < 25; i++) particles.push(new Floater());
+        }
+
+        let mouseX = null;
+        let mouseY = null;
+        window.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        window.addEventListener('mouseleave', () => { mouseX = null; mouseY = null; });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { 
+                p.update(mouseX, mouseY); 
+                p.draw(); 
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { resize(); init(); });
+        resize();
+        init();
+        animate();
+    });
+</script>
 {% endblock %}

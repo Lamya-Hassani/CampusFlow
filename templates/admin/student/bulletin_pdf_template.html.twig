@@ -1,174 +1,102 @@
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Bulletin</title>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bulletin - {{ student.fullName }}</title>
     <style>
-      @page {
-        size: A4;
-        margin: 15mm 15mm 15mm 15mm;
-      }
-      
-      body {
-        font-family: 'DejaVu Sans', sans-serif;
-        font-size: 9pt;
-        color: #000;
-      }
-      
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th,
-      td {
-        border: 0.4pt solid #000;
-        padding: 3pt 4pt;
-        text-align: center;
-      }
-      th {
-        background: #f2f2f2;
-      }
-      
-      .no-border td,
-      .no-border th {
-        border: none;
-      }
-      .left {
-        text-align: left;
-      }
-      .right {
-        text-align: right;
-      }
-      
-      .box {
-        border: 0.5pt solid #ffffffff;
-        height: 20mm;
-      }
-      .small-box {
-        border: 0.5pt solid #000;
-        height: 7mm;
-      }
+        @page { margin: 0.5cm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #000; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 10px; }
+        .school-info { width: 100%; margin-bottom: 10px; }
+        .student-box { border: 1px solid #000; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        th { background-color: #eee; text-align: center; font-weight: bold; }
+        .center { text-align: center; }
+        .right { text-align: right; }
+        .footer-box { width: 32%; display: inline-block; height: 120px; border: 1px solid #000; vertical-align: top; padding: 5px; margin-right: 1%; }
+        .avg-row { background-color: #e6f3ff; font-weight: bold; font-size: 14px; }
     </style>
-  </head>
-  <body>
-    {# ==== HEADER (3 zones comme sur la photo) ==== #}
-    <table class="no-border">
-      <tr>
-        <td class="left" width="33%">
-          Royaume du Maroc<br />
-          Ministère de l'Éducation Nationale<br />
-          Académie …<br />
-          Délégation …<br />
-          Établissement …
-        </td>
-        <td width="34%">
-          <strong>Bulletin du {{ semester }}ème Semestre</strong><br />
-          Année scolaire {{ 'now'|date('Y') }}/{{ ('now'|date('Y')) + 1 }}<br />
-          Classe : {{ student.classe.name }}<br />
-          CNE : {{ student.cne }}
-        </td>
-        <td class="right" width="33%">
-          Code établissement : ……<br />
-          N° d'ordre : ……<br />
-        </td>
-      </tr>
-    </table>
-
-    {# ==== IDENTITÉ ÉLÈVE ==== #}
-    <table style="margin-top:8pt;">
-      <tr>
-        <th>Nom et Prénom</th>
-        <th>Date de naissance</th>
-        <th>Lieu</th>
-        <th>Sexe</th>
-        <th>Redoublant</th>
-      </tr>
-      <tr>
-        <td>{{ student.fullName }}</td>
-        <td>{{ student.birthDate is defined ? student.birthDate|date('d/m/Y') : '' }}</td>
-        <td>{{ student.birthPlace ?? '' }}</td>
-        <td></td>
-        <td></td>
-      </tr>
-    </table>
-
-    {# ==== GRAND TABLEAU DES NOTES (adapter colonnes selon la photo) ==== #}
-    <table style="margin-top:12pt;">
-      <tr>
-        <th rowspan="2" width="20%">Matières</th>
-        <th colspan="3" width="18%">Contrôles continus</th>
-        <th rowspan="2" width="8%">Exam</th>
-        <th rowspan="2" width="7%">Coef</th>
-        <th rowspan="2" width="9%">Moyenne</th>
-        <th rowspan="2">Observations</th>
-      </tr>
-      <tr>
-        <th width="6%">1</th>
-        <th width="6%">2</th>
-        <th width="6%">3</th>
-      </tr>
-
-      {% for grade in grades %}
-        <tr>
-          <td class="left">{{ grade.subject.name }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>{{ grade.exam is defined ? grade.exam|number_format(2) : grade.value|number_format(2) }}</td>
-          <td>{{ grade.subject.coefficient|number_format(1) }}</td>
-          <td>{{ grade.value|number_format(2) }}</td>
-          <td></td>
-        </tr>
-      {% endfor %}
-
-      <tr>
-        <td class="right">
-          <strong>Total / Moyenne générale</strong>
-        </td>
-        <td colspan="3"></td>
-        <td></td>
-        <td>
-          <strong>{{ totalCoef|number_format(1) }}</strong>
-        </td>
-        <td>
-          <strong>{{ average|number_format(2) }}</strong>
-        </td>
-        <td></td>
-      </tr>
-    </table>
-
-    {# ==== BAS DE PAGE : appréciations / décision / visa ==== #}
-    <table style="margin-top:15pt; margin-bottom:6pt; " class="no-border">
-      <tr>
-        <td width="40%" valign="top" style="border: 0.5pt solid #000;">
-          <strong>Appréciation du professeur principal :</strong><br />
-          <div class="box"></div>
-        </td>
-        <td></td>
-        <td width="30%" valign="top" style=" border: 0.5pt solid #000;">
-          <strong>Décision du conseil :</strong><br />
-          <div style="margin-top:6pt; margin-bottom:1pt; text-align:left; display:inline-block;">
-            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block;"></span>
-            <span style="margin-left:4pt;">Admis</span><br />
-
-            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block; margin-top:4pt;"></span>
-            <span style="margin-left:4pt;">Ajourné</span><br />
-
-            <span style="border:0.5pt solid #000; width:10pt; height:5pt; display:inline-block; margin-top:4pt;"></span>
-            <span style="margin-left:4pt;">Redouble</span>
-          </div>
-        </td>
-        <td></td>
-        <td width="30%" valign="top" style="border: 0.5pt solid #000;">
-          <strong>Visa des parents :</strong><br />
-          <div class="box"></div>
-        </td>
-      </tr>
-    </table>
-
-    {# ==== SIGNATURE DU DIRECTEUR ==== #}
-    <div style="text-align:left; margin-top:6pt;">
-      <strong>Le Directeur</strong>
+</head>
+<body>
+    <div class="header">
+        <h3 style="margin:0; text-transform:uppercase;">Royaume du Maroc</h3>
+        <h5 style="margin:5px 0;">Ministère de l'Éducation Nationale</h5>
+        <div style="margin-top:15px; text-align:left;">
+            <strong>Établissement:</strong> CampusFlow Academy &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <strong>Année:</strong> {{ student.classe.academicYear }}
+        </div>
     </div>
-  </body>
+
+    <table class="student-box">
+        <tr>
+            <td style="border:none;">
+                <strong>Nom & Prénom:</strong> {{ student.lastName|upper }} {{ student.firstName }}<br>
+                <strong>CNE:</strong> {{ student.cne }}<br>
+                <strong>Né(e) le:</strong> {{ student.birthDate|date('d/m/Y') }}
+            </td>
+            <td style="border:none; text-align:right;">
+                <strong>Classe:</strong> {{ student.classe.name }}<br>
+                <strong>Niveau:</strong> {{ student.classe.level }}<br>
+                <strong>Semestre:</strong> {{ semester }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th width="35%">Matière</th>
+                <th width="10%">Coef</th>
+                <th width="15%">Note /20</th>
+                <th width="15%">Produit</th>
+                <th width="25%">Observation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalCoef = 0 %}
+            {% set totalPoints = 0 %}
+            {% for item in gradesData %}
+                {% set produit = item.grade.value * item.subject.coefficient %}
+                {% set totalCoef = totalCoef + item.subject.coefficient %}
+                {% set totalPoints = totalPoints + produit %}
+                <tr>
+                    <td>{{ item.subject.name }}</td>
+                    <td class="center">{{ item.subject.coefficient }}</td>
+                    <td class="center">{{ item.grade.value|number_format(2, ',', ' ') }}</td>
+                    <td class="center">{{ produit|number_format(2, ',', ' ') }}</td>
+                    <td style="font-style:italic; font-size:10px;">
+                        {% if item.grade.value >= 14 %}Bien{% elseif item.grade.value >= 10 %}Passable{% else %}Faible{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="right"><strong>TOTAL</strong></td>
+                <td class="center"><strong>{{ totalCoef }}</strong></td>
+                <td style="background-color:#ccc;"></td>
+                <td class="center"><strong>{{ totalPoints|number_format(2, ',', ' ') }}</strong></td>
+                <td></td>
+            </tr>
+            <tr class="avg-row">
+                <td colspan="3" class="right">MOYENNE GÉNÉRALE</td>
+                <td colspan="2" class="center">{{ (totalPoints / (totalCoef ?: 1))|number_format(2, ',', ' ') }} / 20</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div style="margin-top: 30px;">
+        <div class="footer-box">
+            <strong>Décision du conseil:</strong><br><br>
+            {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}Admis{% else %}Redouble{% endif %}
+        </div>
+        <div class="footer-box">
+            <strong>Visa du Tuteur:</strong>
+        </div>
+        <div class="footer-box">
+            <strong>Le Directeur:</strong>
+        </div>
+    </div>
+</body>
 </html>

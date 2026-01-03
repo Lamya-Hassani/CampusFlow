@@ -40,10 +40,14 @@ class Classe
     #[ORM\OneToMany(targetEntity: Schedule::class, mappedBy: 'classe', orphanRemoval: true)]
     private Collection $schedules;
 
+    #[ORM\OneToMany(mappedBy: 'classe', targetEntity: Grade::class)]
+    private Collection $grades;
+
     public function __construct()
     {
         $this->students = new ArrayCollection();
         $this->schedules = new ArrayCollection();
+        $this->grades = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -59,7 +63,6 @@ class Classe
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -71,7 +74,6 @@ class Classe
     public function setLevel(string $level): static
     {
         $this->level = $level;
-
         return $this;
     }
 
@@ -83,7 +85,6 @@ class Classe
     public function setField(string $field): static
     {
         $this->field = $field;
-
         return $this;
     }
 
@@ -95,7 +96,6 @@ class Classe
     public function setMaxCapacity(int $maxCapacity): static
     {
         $this->maxCapacity = $maxCapacity;
-
         return $this;
     }
 
@@ -107,7 +107,6 @@ class Classe
     public function setAcademicYear(string $academicYear): static
     {
         $this->academicYear = $academicYear;
-
         return $this;
     }
 
@@ -119,7 +118,6 @@ class Classe
     public function setSupervisor(?Teacher $supervisor): static
     {
         $this->supervisor = $supervisor;
-
         return $this;
     }
 
@@ -137,7 +135,6 @@ class Classe
             $this->students->add($student);
             $student->setClasse($this);
         }
-
         return $this;
     }
 
@@ -148,7 +145,6 @@ class Classe
                 $student->setClasse(null);
             }
         }
-
         return $this;
     }
 
@@ -166,7 +162,6 @@ class Classe
             $this->schedules->add($schedule);
             $schedule->setClasse($this);
         }
-
         return $this;
     }
 
@@ -177,7 +172,33 @@ class Classe
                 $schedule->setClasse(null);
             }
         }
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Grade>
+     */
+    public function getGrades(): Collection
+    {
+        return $this->grades;
+    }
+
+    public function addGrade(Grade $grade): static
+    {
+        if (!$this->grades->contains($grade)) {
+            $this->grades->add($grade);
+            $grade->setClasse($this);
+        }
+        return $this;
+    }
+
+    public function removeGrade(Grade $grade): static
+    {
+        if ($this->grades->removeElement($grade)) {
+            if ($grade->getClasse() === $this) {
+                $grade->setClasse(null); // now allowed
+            }
+        }
         return $this;
     }
 

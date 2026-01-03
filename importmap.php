@@ -25,4 +25,11 @@ return [
     '@hotwired/turbo' => [
         'version' => '8.0.20',
     ],
+    'tailwindcss' => [
+        'version' => '4.1.18',
+    ],
+    'tailwindcss/index.min.css' => [
+        'version' => '4.1.18',
+        'type' => 'css',
+    ],
 ];

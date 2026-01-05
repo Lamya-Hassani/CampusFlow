@@ -1,47 +1,372 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion Emploi du Temps - CampusFlow{% endblock %}
+{% block title %}Admin Planning - CampusFlow{% endblock %}
 
-{% block body %}
-<div class="px-4 py-6 sm:px-0">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Gestion de l'Emploi du Temps</h1>
-        <a href="{{ path('admin_schedule_new') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">+ Nouveau créneau</a>
-    </div>
-    <div class="bg-white shadow overflow-hidden sm:rounded-md">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jour</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heure</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matière</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classe</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enseignant</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Salle</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for schedule in schedules %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.dayOfWeek }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.subject.name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.classe.name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.teacher.fullName }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ schedule.room }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <a href="{{ path('admin_schedule_edit', {id: schedule.id}) }}" class="text-yellow-600 mr-3">Modifier</a>
-                        <form method="post" action="{{ path('admin_schedule_delete', {id: schedule.id}) }}" class="inline" onsubmit="return confirm('Supprimer ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ schedule.id) }}">
-                            <button type="submit" class="text-red-600">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Custom Scrollbar for internal containers */
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
 {% endblock %}
 
+{% block body %}
+<!-- 
+    LAYOUT: Fixed Height Container (100vh - Navbar) 
+    Prevents whole page scrolling, enables internal scrolling.
+-->
+<div class="h-[calc(100vh-5rem)] bg-slate-50 p-4 md:p-6 overflow-hidden">
+    
+    <div class="flex h-full gap-6 max-w-[1920px] mx-auto">
+        
+        <!-- ============================================
+             1. SIDEBAR: CLASS LIST
+             ============================================ -->
+        <div class="w-80 flex flex-col bg-white rounded-3xl shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] border border-slate-200 overflow-hidden shrink-0">
+            
+            <!-- Sidebar Header (Sticky) -->
+            <div class="p-5 border-b border-slate-100 bg-white z-10">
+                <h2 class="text-lg font-black text-[#0F172A] mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-[#3A86FF]"></i> Classes
+                </h2>
+                <div class="relative group">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3A86FF] transition-colors"></i>
+                    <input type="text" id="classSearch" placeholder="Filtrer..." 
+                        class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#3A86FF]/20 focus:border-[#3A86FF] transition-all outline-none">
+                </div>
+            </div>
+            
+            <!-- Scrollable List -->
+            <div class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1">
+                {% for classe in classes %}
+                    {% set isActive = selectedClass and selectedClass.id == classe.id %}
+                    
+                    <a href="{{ path('admin_schedule_index', {class: classe.id}) }}" 
+                       class="class-item flex items-center justify-between p-3 rounded-xl transition-all duration-200 group
+                       {{ isActive ? 'bg-[#0F172A] text-white shadow-md transform scale-[1.02]' : 'text-slate-600 hover:bg-slate-50 hover:text-[#0F172A]' }}"
+                       data-name="{{ classe.name }}">
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold
+                                {{ isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm' }}">
+                                {{ classe.name|slice(0, 2)|upper }}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold leading-tight">{{ classe.name }}</span>
+                                <span class="text-[10px] {{ isActive ? 'text-slate-300' : 'text-slate-400' }}">{{ classe.level }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if isActive %}
+                            <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ============================================
+             2. MAIN CONTENT: PLANNING GRID
+             ============================================ -->
+        <div class="flex-1 flex flex-col min-w-0 h-full">
+            
+            <!-- Page Header -->
+            <div class="flex justify-between items-end mb-4 shrink-0 px-2">
+                <div>
+                    {% if selectedClass %}
+                        <span class="text-[#D97706] text-xs font-bold uppercase tracking-widest mb-1 block">Gestion du Planning</span>
+                        <h1 class="text-3xl font-heading font-black text-[#0F172A]">
+                            {{ selectedClass.name }} <span class="text-slate-300 font-light text-2xl ml-2">{{ selectedClass.field }}</span>
+                        </h1>
+                    {% else %}
+                        <h1 class="text-3xl font-heading font-black text-[#0F172A]">Tableau de Bord</h1>
+                        <p class="text-slate-500 text-sm">Sélectionnez une classe pour commencer.</p>
+                    {% endif %}
+                </div>
+                
+                {% if selectedClass %}
+                    <button onclick="openNewModal()" 
+                            class="group bg-[#3A86FF] hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2 text-sm hover:-translate-y-0.5">
+                        <i class="fa-solid fa-plus bg-white/20 rounded-md p-1 text-xs"></i>
+                        <span>Nouveau Créneau</span>
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- The Grid Card -->
+            {% if selectedClass %}
+                <div class="flex-1 bg-white rounded-3xl shadow-[0_10px_40px_-15px_rgba(15,23,42,0.1)] border border-slate-200 overflow-hidden flex flex-col relative">
+                    
+                    <!-- Days Header (Fixed) -->
+                    <div class="grid grid-cols-6 border-b border-slate-100 bg-slate-50/80 backdrop-blur-sm z-10 shrink-0">
+                        {% for day, label in {
+                            'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 
+                            'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi'
+                        } %}
+                            <div class="py-3 text-center border-r border-slate-100 last:border-0">
+                                <span class="block text-xs font-black text-slate-400 uppercase tracking-widest">{{ label }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Calendar Grid (Scrollable) -->
+                    <div class="flex-1 overflow-y-auto custom-scroll p-2">
+                        <div class="grid grid-cols-6 h-full min-h-[600px] gap-2">
+                            {% for dayEnglish, dayFrench in {
+                                'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 
+                                'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi'
+                            } %}
+                                <div class="space-y-2 h-full rounded-xl p-1 transition-colors hover:bg-slate-50">
+                                    {% for schedule in weekCalendar[dayEnglish] %}
+                                        
+                                        {# COLOR LOGIC #}
+                                        {% set isCM = (schedule.courseType == 'CM' or schedule.courseType == 'Cours') %}
+                                        {% set isTP = (schedule.courseType == 'TP') %}
+                                        
+                                        {% set typeColor = isCM ? '#F59E0B' : (isTP ? '#3A86FF' : '#10B981') %}
+                                        {% set bgColor = isCM ? 'bg-amber-50' : (isTP ? 'bg-blue-50' : 'bg-emerald-50') %}
+                                        
+                                        <div class="group relative bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer overflow-hidden {{ bgColor }}"
+                                             ondblclick="openEditModal({{ {
+                                                 id: schedule.id,
+                                                 subject: schedule.subject.id,
+                                                 teacher: schedule.teacher.id,
+                                                 room: schedule.room,
+                                                 day: schedule.dayOfWeek,
+                                                 start: schedule.startTime|date('H:i'),
+                                                 end: schedule.endTime|date('H:i'),
+                                                 type: schedule.courseType,
+                                                 classe: schedule.classe.id,
+                                                 semester: schedule.semester
+                                             }|json_encode }})">
+                                            
+                                            <!-- Left Stripe -->
+                                            <div class="absolute left-0 top-0 bottom-0 w-1.5 transition-all group-hover:w-2" style="background-color: {{ typeColor }}"></div>
+
+                                            <div class="pl-2">
+                                                <!-- Header: Time & Type -->
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <span class="text-xs font-bold bg-white/80 px-2 py-0.5 rounded text-[#0F172A] border border-slate-100">
+                                                        {{ schedule.startTime|date('H:i') }}
+                                                    </span>
+                                                    <span class="text-[10px] font-black uppercase tracking-wider opacity-70" style="color: {{ typeColor }}">
+                                                        {{ schedule.courseType }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <!-- Subject -->
+                                                <h4 class="font-bold text-[#0F172A] text-sm leading-tight mb-2.5 line-clamp-2">
+                                                    {{ schedule.subject.name }}
+                                                </h4>
+                                                
+                                                <!-- Footer: Teacher & Room -->
+                                                <div class="flex items-center justify-between border-t border-slate-200/50 pt-2.5 mt-1">
+                                                    <div class="flex items-center gap-1.5">
+                                                        <div class="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-500 border border-slate-100">
+                                                            {{ schedule.teacher.lastName|slice(0,1) }}
+                                                        </div>
+                                                        <span class="text-xs font-bold text-slate-500 truncate max-w-[60px]">{{ schedule.teacher.lastName }}</span>
+                                                    </div>
+                                                    <span class="text-xs font-bold text-slate-400 flex items-center gap-1">
+                                                        <i class="fa-solid fa-location-dot text-[10px]" style="color: {{ typeColor }}"></i> {{ schedule.room }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Edit Icon Overlay -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-pen text-[10px] text-slate-400"></i>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <!-- Dashed Placeholder for empty days -->
+                                        <div class="h-24 rounded-xl border-2 border-dashed border-slate-100 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                            <i class="fa-solid fa-plus text-slate-300"></i>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="flex-1 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 m-4">
+                    <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                        <i class="fa-solid fa-calendar-days text-4xl text-slate-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700">Aucune classe sélectionnée</h3>
+                    <p class="text-sm">Cliquez sur une classe dans la barre latérale pour afficher son planning.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL (IMPROVED LAYOUT)
+     ============================================ -->
+<div id="scheduleModal" class="fixed inset-0 bg-[#0F172A]/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="modalCard">
+        
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-white">
+            <div>
+                <h3 id="modalTitle" class="text-xl font-black text-[#0F172A] tracking-tight">Ajouter un créneau</h3>
+                <p class="text-xs text-slate-500 font-medium mt-1">Remplissez les informations du cours</p>
+            </div>
+            <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-[#0F172A] transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <!-- Form -->
+        <form id="scheduleForm" method="POST" action="" class="p-8">
+            <div id="formContent">
+                {{ form_start(schedule_form) }}
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Full Width Inputs -->
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Matière</label>
+                        {{ form_widget(schedule_form.subject, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Enseignant</label>
+                        {{ form_widget(schedule_form.teacher, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
+                    </div>
+                    
+                    <!-- Grid Inputs -->
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Jour</label>
+                        {{ form_widget(schedule_form.dayOfWeek, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 focus:bg-white transition-all'}}) }}
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Type</label>
+                        {{ form_widget(schedule_form.courseType, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 focus:bg-white transition-all'}}) }}
+                    </div>
+                    
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Heure Début</label>
+                        {{ form_widget(schedule_form.startTime, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm font-mono focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all'}}) }}
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Heure Fin</label>
+                        {{ form_widget(schedule_form.endTime, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm font-mono focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all'}}) }}
+                    </div>
+                    
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Salle</label>
+                        {{ form_widget(schedule_form.room, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm placeholder:text-slate-300 font-bold focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all', placeholder: 'Ex: A201'}}) }}
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2 ml-1">Semestre</label>
+                        {{ form_widget(schedule_form.semester, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all'}}) }}
+                    </div>
+                    
+                    <div class="hidden">{{ form_row(schedule_form.classe) }}</div>
+                </div>
+                {{ form_rest(schedule_form) }}
+                {{ form_end(schedule_form) }}
+            </div>
+            
+            <!-- Footer Actions (Side by Side) -->
+            <div class="grid grid-cols-2 gap-4 pt-6 mt-6 border-t border-slate-100">
+                <!-- Left: Delete Button -->
+                <div class="flex items-center">
+                    <button type="button" id="deleteBtn" onclick="confirmDelete()" class="hidden text-rose-500 hover:text-white hover:bg-rose-500 px-6 py-3 rounded-xl transition-all text-sm font-bold flex items-center justify-center gap-2 border-2 border-rose-200 hover:border-rose-500 w-full">
+                        <i class="fa-regular fa-trash-can"></i> Supprimer
+                    </button>
+                </div>
+
+                <!-- Right: Cancel & Save Buttons -->
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="closeModal()" class="flex-1 px-5 py-3 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-100 transition-all text-sm border-2 border-slate-200">
+                        Annuler
+                    </button>
+                    <button type="submit" id="saveBtn" class="flex-1 bg-[#3A86FF] hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form id="deleteForm" method="POST" action="" class="hidden"><input type="hidden" name="_token" id="deleteToken"></form>
+<input type="hidden" name="_token_delete_template" value="{{ csrf_token('delete' ~ 'ID_PLACEHOLDER') }}" class="hidden">
+
+<script>
+    const modal = document.getElementById('scheduleModal');
+    const modalCard = document.getElementById('modalCard');
+    const form = document.querySelector('#scheduleModal form');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const modalTitle = document.getElementById('modalTitle');
+
+    document.getElementById('classSearch')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.class-item').forEach(item => {
+            item.style.display = item.dataset.name.toLowerCase().includes(term) ? 'flex' : 'none';
+        });
+    });
+
+    function openNewModal() {
+        modalTitle.innerText = "Nouveau Créneau";
+        form.action = "{{ path('admin_schedule_new') }}";
+        form.reset();
+        {% if selectedClass %}
+            const classSelect = form.querySelector('[name*="[classe]"]');
+            if (classSelect) classSelect.value = "{{ selectedClass.id }}";
+        {% endif %}
+        deleteBtn.classList.add('hidden');
+        modal.classList.remove('hidden');
+        setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+    }
+
+    function openEditModal(data) {
+        modalTitle.innerText = "Modifier le Créneau";
+        form.action = `/admin/schedule/${data.id}/edit`;
+        populateField('subject', data.subject);
+        populateField('teacher', data.teacher);
+        populateField('dayOfWeek', data.day);
+        populateField('courseType', data.type);
+        populateField('startTime', data.start);
+        populateField('endTime', data.end);
+        populateField('room', data.room);
+        populateField('classe', data.classe);
+        populateField('semester', data.semester);
+        deleteBtn.classList.remove('hidden');
+        deleteBtn.dataset.id = data.id;
+        modal.classList.remove('hidden');
+        setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+    }
+
+    function populateField(name, value) {
+        const field = form.querySelector(`[name*="[${name}]"]`);
+        if (field) field.value = value;
+    }
+
+    function closeModal() {
+        modalCard.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function confirmDelete() {
+        if (confirm('Supprimer ce créneau ?')) {
+            const id = deleteBtn.dataset.id;
+            const realDeleteForm = document.createElement('form');
+            realDeleteForm.method = 'POST';
+            realDeleteForm.action = `/admin/schedule/${id}`;
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '_token';
+            tokenInput.value = document.querySelector('input[name="_token_delete_template"]').value.replace('ID_PLACEHOLDER', id);
+            realDeleteForm.appendChild(tokenInput);
+            document.body.appendChild(realDeleteForm);
+            realDeleteForm.submit();
+        }
+    }
+</script>
+{% endblock %}

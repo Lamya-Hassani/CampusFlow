@@ -21,18 +21,44 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(ScheduleRepository $scheduleRepository, Request $request): Response
+    public function index(ScheduleRepository $scheduleRepository, ClasseRepository $classeRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $classes = $classeRepository->findAll();
         $classId = $request->query->get('class');
-        $schedules = $classId 
-            ? $scheduleRepository->findBy(['classe' => $classId])
-            : $scheduleRepository->findAll();
+        
+        $selectedClass = null;
+        if ($classId) {
+            $selectedClass = $classeRepository->find($classId);
+        }
+
+        $schedules = $selectedClass 
+            ? $scheduleRepository->findBy(['classe' => $selectedClass], ['startTime' => 'ASC'])
+            : [];
+
+        // Organize schedules by day
+        $weekCalendar = [
+            'Monday' => [],
+            'Tuesday' => [],
+            'Wednesday' => [],
+            'Thursday' => [],
+            'Friday' => [],
+            'Saturday' => [],
+        ];
+
+        foreach ($schedules as $schedule) {
+            $weekCalendar[$schedule->getDayOfWeek()][] = $schedule;
+        }
+
+        $newSchedule = new Schedule();
+        $newSchedule->setSemester(1); // Default
 
         return $this->render('admin/schedule/index.html.twig', [
-            'schedules' => $schedules,
-            'selectedClass' => $classId,
+            'classes' => $classes,
+            'selectedClass' => $selectedClass,
+            'weekCalendar' => $weekCalendar,
+            'schedule_form' => $this->createForm(ScheduleType::class, $newSchedule)->createView(),
         ]);
     }
 

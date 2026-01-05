@@ -3,18 +3,217 @@
 {% block title %}Modifier Créneau - CampusFlow{% endblock %}
 
 {% block body %}
-<div class="px-4 py-6 sm:px-0">
-    <div class="mb-6"><a href="{{ path('admin_schedule_index') }}" class="text-indigo-600">← Retour</a></div>
-    <h1 class="text-3xl font-bold mb-6">Modifier créneau</h1>
-    <div class="bg-white shadow rounded-lg p-6">
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <div class="flex justify-end space-x-3 mt-6">
-                <a href="{{ path('admin_schedule_index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</a>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
-            </div>
-        {{ form_end(form) }}
-    </div>
-</div>
-{% endblock %}
+{# MODAL PLANNING (NEW / EDIT) #}
+<div id="scheduleModal"
+     class="fixed inset-0 bg-[#0F172A]/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div id="modalCard"
+       class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-200">
 
+    {# HEADER #}
+    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+      <div>
+        <h3 id="modalTitle" class="text-xl font-black text-[#0F172A] tracking-tight">
+          Modifier le créneau
+        </h3>
+        <p class="text-xs text-slate-500 font-medium mt-1">
+          Remplissez les informations du cours
+        </p>
+      </div>
+      <button type="button"
+              onclick="closeModal()"
+              class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-[#0F172A] transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    {# UNIQUE FORM HTML (pas de form_start / form_end ici) #}
+    <form id="scheduleForm" method="POST" action="" class="px-8 pt-6 pb-6">
+      {# CSRF, rempli en JS selon new/edit #}
+      <input type="hidden" name="_token" id="scheduleToken" value="">
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="col-span-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Matière
+          </label>
+          {{ form_widget(schedule_form.subject, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all px-3 py-2.5 text-sm font-bold text-[#0F172A]' }
+          }) }}
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Enseignant
+          </label>
+          {{ form_widget(schedule_form.teacher, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all px-3 py-2.5 text-sm font-medium text-[#0F172A]' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Jour
+          </label>
+          {{ form_widget(schedule_form.dayOfWeek, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 focus:bg-white transition-all' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Type
+          </label>
+          {{ form_widget(schedule_form.courseType, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 focus:bg-white transition-all' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Heure début
+          </label>
+          {{ form_widget(schedule_form.startTime, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm font-mono focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Heure fin
+          </label>
+          {{ form_widget(schedule_form.endTime, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm font-mono focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Salle
+          </label>
+          {{ form_widget(schedule_form.room, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm placeholder:text-slate-300 font-bold focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all' }
+          }) }}
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
+            Semestre
+          </label>
+          {{ form_widget(schedule_form.semester, {
+            attr: { class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 text-sm focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all' }
+          }) }}
+        </div>
+
+        {# champ classe caché #}
+        <div class="hidden">
+          {{ form_widget(schedule_form.classe) }}
+        </div>
+      </div>
+
+      {# ACTIONS #}
+      <div class="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-slate-100">
+        <div>
+          <button type="button"
+                  id="deleteBtn"
+                  onclick="confirmDelete()"
+                  class="hidden w-full text-rose-500 hover:text-white hover:bg-rose-500 px-4 py-2.5 rounded-xl transition-all text-sm font-bold flex items-center justify-center gap-2 border border-rose-200 hover:border-rose-500">
+            <i class="fa-regular fa-trash-can"></i> Supprimer
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button"
+                  onclick="closeModal()"
+                  class="flex-1 px-4 py-2.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-100 transition-all text-sm border border-slate-200">
+            Annuler
+          </button>
+          <button type="submit"
+                  id="saveBtn"
+                  class="flex-1 bg-[#3A86FF] hover:bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i> Enregistrer
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{# JS #}
+<script>
+  const modal = document.getElementById('scheduleModal');
+  const modalCard = document.getElementById('modalCard');
+  const form = document.getElementById('scheduleForm');
+  const deleteBtn = document.getElementById('deleteBtn');
+  const modalTitle = document.getElementById('modalTitle');
+  const tokenInput = document.getElementById('scheduleToken');
+
+  function openNewModal() {
+    modalTitle.innerText = "Nouveau créneau";
+    form.action = "{{ path('admin_schedule_new') }}";
+    form.reset();
+    deleteBtn.classList.add('hidden');
+
+    // CSRF pour "new" (adapter le nom au token que tu utilises)
+    tokenInput.value = "{{ csrf_token('schedule_new') }}";
+
+    {% if selectedClass %}
+      const classField = form.querySelector('[name*="[classe]"]');
+      if (classField) classField.value = "{{ selectedClass.id }}";
+    {% endif %}
+
+    modal.classList.remove('hidden');
+    setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+  }
+
+  function openEditModal(data) {
+    modalTitle.innerText = "Modifier le créneau";
+    form.action = `/admin/schedule/${data.id}/edit`;
+    form.reset();
+
+    populateField('subject', data.subject);
+    populateField('teacher', data.teacher);
+    populateField('dayOfWeek', data.day);
+    populateField('courseType', data.type);
+    populateField('startTime', data.start);
+    populateField('endTime', data.end);
+    populateField('room', data.room);
+    populateField('classe', data.classe);
+    populateField('semester', data.semester);
+
+    // CSRF pour "edit" (adapter le nom)
+    tokenInput.value = "{{ csrf_token('schedule_edit') }}`;
+
+    deleteBtn.classList.remove('hidden');
+    deleteBtn.dataset.id = data.id;
+
+    modal.classList.remove('hidden');
+    setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+  }
+
+  function populateField(name, value) {
+    const field = form.querySelector(`[name*="[${name}]"]`);
+    if (field) field.value = value;
+  }
+
+  function closeModal() {
+    modalCard.classList.add('scale-95');
+    setTimeout(() => modal.classList.add('hidden'), 150);
+  }
+
+  function confirmDelete() {
+    if (!confirm('Supprimer ce créneau ?')) return;
+    const id = deleteBtn.dataset.id;
+    const f = document.createElement('form');
+    f.method = 'POST';
+    f.action = `/admin/schedule/${id}`;
+    const token = document.createElement('input');
+    token.type = 'hidden';
+    token.name = '_token';
+    token.value = "{{ csrf_token('delete' ~ 'ID_PLACEHOLDER') }}".replace('ID_PLACEHOLDER', id);
+    f.appendChild(token);
+    document.body.appendChild(f);
+    f.submit();
+  }
+</script>
+
+{% endblock %}

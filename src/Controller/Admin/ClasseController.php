@@ -20,14 +20,18 @@ class ClasseController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(ClasseRepository $classeRepository): Response
+    public function index(ClasseRepository $classeRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $classes = $classeRepository->findAll();
+        $search = $request->query->get('search');
+        $classes = $search
+            ? $classeRepository->findByNameOrField($search)
+            : $classeRepository->findAll();
 
         return $this->render('admin/classe/index.html.twig', [
             'classes' => $classes,
+            'search' => $search,
         ]);
     }
 

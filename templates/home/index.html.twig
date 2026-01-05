@@ -1,659 +1,700 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}CampusFlow - L'Excellence Éducative{% endblock %}
+{% block title %}
+  CampusFlow - L'Excellence Éducative
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* --- Page-Specific Animations & Utilities --- */
-        .text-sheer {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(135deg, #FDBA74 0%, #FFF 100%);
-        }
-
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .scroll-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- 3D CAMPUSBOT (The "Drone") --- */
-        #campusBot {
-            position: fixed;
-            pointer-events: none;
-            z-index: 100;
-            width: 60px;
-            height: 60px;
-            /* Initial off-screen position */
-            left: -100px; 
-            top: -100px;
-            transition: opacity 0.3s;
-        }
-
-        /* The Sphere Body */
-        .bot-body {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* Metallic Gradient: Light Top-Left, Dark Bottom-Right */
-            background: radial-gradient(circle at 30% 30%, #ffffff, #d1d5db 40%, #4b5563 85%, #1f2937 100%);
-            box-shadow: 
-                0 10px 25px rgba(0,0,0,0.4), /* Drop Shadow */
-                inset 0 -5px 10px rgba(0,0,0,0.5), /* Inner Shadow for depth */
-                inset 0 2px 5px rgba(255,255,255,0.9); /* Top Highlight */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* The Eye Socket (Inset) */
-        .bot-eye-socket {
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
-            background: #000;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); /* Inner depth */
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* The Glowing Lens (Iris) */
-        .bot-lens {
-            width: 50%;
-            height: 50%;
-            border-radius: 50%;
-            background: radial-gradient(circle at 40% 40%, #60A5FA, #3A86FF 60%, #1E3A8A 100%);
-            box-shadow: 0 0 15px #3A86FF; /* Glow */
-            position: relative;
-        }
-
-        /* Lens Reflection (Glass effect) */
-        .bot-lens::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 20%;
-            height: 20%;
-            background: #fff;
-            border-radius: 50%;
-            opacity: 0.8;
-            filter: blur(1px);
-        }
-
-        /* Mechanical Ring (Tech Detail) */
-        .bot-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%;
-            height: 120%;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            border-left-color: transparent;
-            border-right-color: transparent;
-            animation: spin 4s linear infinite;
-        }
-
-        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-
-        /* Hide bot on touch devices */
-        @media (hover: none) {
-            #campusBot { display: none; }
-        }
-    </style>
+  {{ parent() }}
+  <style>
+    /* --- Page-Specific Animations & Utilities --- */
+    .text-sheer {
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(135deg, #fdba74 0%, #fff 100%);
+    }
+    
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* --- 3D CAMPUSBOT (The "Drone") --- */
+    #campusBot {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+      width: 60px;
+      height: 60px;
+      left: -100px;
+      top: -100px;
+      transition: opacity 0.3s;
+    }
+    
+    .bot-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #d1d5db 40%, #4b5563 85%, #1f2937 100%);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), inset 0 -5px 10px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.9);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .bot-eye-socket {
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      background: #000;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .bot-lens {
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, #60a5fa, #3a86ff 60%, #1e3a8a 100%);
+      box-shadow: 0 0 15px #3a86ff;
+      position: relative;
+    }
+    
+    .bot-lens::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 15%;
+      width: 20%;
+      height: 20%;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.8;
+      filter: blur(1px);
+    }
+    
+    .bot-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      animation: spin 4s linear infinite;
+    }
+    
+    @keyframes spin {
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+    
+    @media (hover: none) {
+      #campusBot {
+        display: none;
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
-<!-- 
-    PALETTE:
-    - Primary: Midnight Blue (#0F172A)
-    - Accent: Amber Gold (#D97706) / (#F59E0B)
-    - Highlight: Rose Clay (#E11D48)
-    - Base: Cream Paper (#FFFBEB)
--->
-<div class="bg-[#FFFBEB] min-h-screen text-[#0F172A] overflow-x-hidden selection:bg-[#D97706] selection:text-white font-sans relative">
-
-    {# ============================================
-       3D CAMPUSBOT (The "Drone")
-       ============================================ #}
+  <div class="bg-[#FFFBEB] min-h-screen text-[#0F172A] overflow-x-hidden selection:bg-[#D97706] selection:text-white font-sans relative">
+    <!-- 3D Bot Element -->
     <div id="campusBot">
-        <div class="bot-ring"></div>
-        <div class="bot-body">
-            <div class="bot-eye-socket">
-                <div class="bot-lens" id="botPupil"></div>
-            </div>
+      <div class="bot-ring"></div>
+      <div class="bot-body">
+        <div class="bot-eye-socket">
+          <div class="bot-lens" id="botPupil"></div>
         </div>
+      </div>
     </div>
 
     {# ============================================
-       PUBLIC NAVBAR (Premium / Minimal)
+       NAVBAR
        ============================================ #}
     <nav class="fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-[#0F172A]/90 border-b border-white/5">
-        <div class="container mx-auto px-6 h-24 flex justify-between items-center">
-            <!-- Brand -->
-            <a href="#" class="flex items-center gap-4 group">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#D97706] to-[#92400E] flex items-center justify-center text-white shadow-xl shadow-amber-900/40 border border-white/10 group-hover:scale-110 transition-transform duration-500">
-                    <span class="text-2xl">🏛️</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-heading font-bold text-2xl tracking-tight text-white leading-none">
-                        Campus<span class="text-[#F59E0B]">Flow</span>
-                    </span>
-                    <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Depuis 1998</span>
-                </div>
-            </a>
+      <div class="container mx-auto px-6 h-24 flex justify-between items-center">
+        <a href="#" class="flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#D97706] to-[#92400E] flex items-center justify-center text-white shadow-xl shadow-amber-900/40 border border-white/10 group-hover:scale-110 transition-transform duration-500">
+            <span class="text-2xl">🏛️</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-bold text-2xl tracking-tight text-white leading-none">Campus<span class="text-[#F59E0B]">Flow</span></span>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Depuis 1998</span>
+          </div>
+        </a>
 
-            <!-- Desktop Links -->
-            <div class="hidden lg:flex items-center gap-10">
-                <a href="#history" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
-                    Héritage
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="#activities" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
-                    Excellence
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="#contact" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
-                    Nous Rejoindre
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-            </div>
-
-            <!-- Login CTA -->
-            <div class="flex items-center gap-4">
-                <a href="{{ path('app_login') }}" class="px-8 py-3 rounded-sm border border-[#D97706]/30 bg-[#D97706]/10 text-[#F59E0B] hover:bg-[#D97706] hover:text-white transition-all text-sm font-bold tracking-wider uppercase backdrop-blur-sm">
-                    Espace Privé
-                </a>
-            </div>
+        <div class="hidden lg:flex items-center gap-10">
+          <a href="#history" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
+            Héritage
+            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#activities" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
+            Excellence
+            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#contact" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#F59E0B] transition-colors relative group">
+            Nous Rejoindre
+            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+          </a>
         </div>
+
+        <div class="flex items-center gap-4">
+          <a href="{{ path('app_login') }}" class="px-8 py-3 rounded-sm border border-[#D97706]/30 bg-[#D97706]/10 text-[#F59E0B] hover:bg-[#D97706] hover:text-white transition-all text-sm font-bold tracking-wider uppercase backdrop-blur-sm">Espace Privé</a>
+        </div>
+      </div>
     </nav>
 
     {# ============================================
        ACT I: THE PROMISE (Hero)
-       "More Than a School. A Launchpad."
+       Dark Section
        ============================================ #}
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0F172A] pt-20">
-        <!-- Abstract Background -->
-        <div class="absolute inset-0 bg-[#0F172A]"></div>
-        
-        <!-- Canvas Layer for Interactive Constellation -->
-        <canvas id="heroCanvas" class="absolute inset-0 w-full h-full z-0 opacity-60"></canvas>
-        
-        <!-- Vignette -->
-        <div class="absolute inset-0 bg-radial-gradient from-transparent to-[#0F172A] pointer-events-none"></div>
+      <div class="absolute inset-0 bg-[#0F172A]"></div>
+      <!-- Canvas Animation -->
+      <canvas id="heroCanvas" class="absolute inset-0 w-full h-full z-0 opacity-60"></canvas>
+      <!-- Radial Vignette -->
+      <div class="absolute inset-0 bg-radial-gradient from-transparent to-[#0F172A] pointer-events-none"></div>
 
-        <div class="container mx-auto px-6 relative z-10 text-center pointer-events-none">
-            <!-- Content wrapper adjusts pointer events to allow clicks -->
-            <div class="pointer-events-auto">
-                <div class="scroll-reveal visible delay-100 mb-8 flex justify-center">
-                    <div class="px-4 py-1.5 border border-[#F59E0B]/30 rounded-full bg-[#F59E0B]/5 backdrop-blur-md flex items-center gap-3">
-                        <span class="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse"></span>
-                        <span class="text-[#F59E0B] text-xs font-bold uppercase tracking-[0.2em]">Inscriptions Ouvertes 2026</span>
-                    </div>
-                </div>
-                
-                <h1 class="text-5xl md:text-8xl font-heading font-black tracking-tight leading-1 mb-10 text-white scroll-reveal visible delay-200">
-                    Plus qu'une École.<br/>
-                    <span class="text-sheer italic pr-4">Un Tremplin.</span>
-                </h1>
-                
-                <p class="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-16 font-light leading-relaxed scroll-reveal visible delay-300 border-l border-[#F59E0B]/30 pl-6 text-left md:text-center md:border-l-0 md:pl-0">
-                    Dans un monde en constante évolution, nous ne formons pas seulement des élèves brillants. Nous formons les <strong class="text-[#F59E0B] font-semibold">leaders éthiques</strong>, les <strong class="text-[#E11D48] font-semibold">créateurs audacieux</strong> et les <strong class="text-white font-semibold">citoyens du monde</strong> de demain.
-                </p>
-
-                <div class="flex flex-col md:flex-row gap-6 justify-center items-center scroll-reveal visible delay-500">
-                    <a href="#contact" class="w-full md:w-auto px-10 py-5 bg-[#D97706] text-white font-bold text-sm tracking-widest uppercase hover:bg-[#B45309] transition-all shadow-[0_10px_40px_-10px_rgba(217,119,6,0.5)] transform hover:-translate-y-1">
-                        Sécuriser leur Avenir
-                    </a>
-                    <a href="#history" class="w-full md:w-auto px-10 py-5 border border-white/10 text-white font-bold text-sm tracking-widest uppercase hover:bg-white/5 transition-all flex items-center justify-center gap-3">
-                        <span class="w-8 h-[1px] bg-white/50"></span>
-                        Notre Héritage
-                    </a>
-                </div>
+      <div class="container mx-auto px-6 relative z-10 text-center pointer-events-none">
+        <div class="pointer-events-auto">
+          <div class="scroll-reveal visible delay-100 mb-8 flex justify-center">
+            <div class="px-4 py-1.5 border border-[#F59E0B]/30 rounded-full bg-[#F59E0B]/5 backdrop-blur-md flex items-center gap-3">
+              <span class="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse"></span>
+              <span class="text-[#F59E0B] text-xs font-bold uppercase tracking-[0.2em]">Inscriptions Ouvertes 2026</span>
             </div>
+          </div>
+
+          <h1 class="text-5xl md:text-8xl font-heading font-black tracking-tight leading-1 mb-10 text-white scroll-reveal visible delay-200">
+            Plus qu'une École.<br />
+            <span class="text-sheer italic pr-4">Un Tremplin.</span>
+          </h1>
+
+          <p class="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-16 font-light leading-relaxed scroll-reveal visible delay-300 border-l border-[#F59E0B]/30 pl-6 text-left md:text-center md:border-l-0 md:pl-0">
+            Dans un monde en constante évolution, nous ne formons pas seulement des élèves brillants. Nous formons les <strong class="text-[#F59E0B] font-semibold">leaders éthiques</strong>, les <strong class="text-[#E11D48] font-semibold">créateurs audacieux</strong> et les <strong class="text-white font-semibold">citoyens du monde</strong> de demain.
+          </p>
+
+          <div class="flex flex-col md:flex-row gap-6 justify-center items-center scroll-reveal visible delay-500">
+            <a href="#contact" class="w-full md:w-auto px-10 py-5 bg-[#D97706] text-white font-bold text-sm tracking-widest uppercase hover:bg-[#B45309] transition-all shadow-[0_10px_40px_-10px_rgba(217,119,6,0.5)] transform hover:-translate-y-1">Sécuriser leur Avenir</a>
+            <a href="#history" class="w-full md:w-auto px-10 py-5 border border-white/10 text-white font-bold text-sm tracking-widest uppercase hover:bg-white/5 transition-all flex items-center justify-center gap-3">
+              <span class="w-8 h-[1px] bg-white/50"></span>
+              Notre Héritage
+            </a>
+          </div>
         </div>
+      </div>
     </section>
 
     {# ============================================
        ACT II: THE FOUNDATION (History)
-       "Built on Excellence"
+       Light Section (Cream Background)
        ============================================ #}
     <section id="history" class="py-32 relative bg-[#FFFBEB]">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row gap-16">
-                <!-- Title Block -->
-                <div class="md:w-1/3 scroll-reveal sticky top-32 h-fit">
-                    <span class="text-[#D97706] font-bold tracking-widest uppercase text-sm block mb-4">Notre Histoire</span>
-                    <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-[#0F172A] mb-8 leading-tight">
-                        25 Ans <br/> <span class="text-slate-400">d'Excellence.</span>
-                    </h2>
-                    <p class="text-slate-600 leading-relaxed mb-8">
-                        Depuis notre fondation en 1998, CampusFlow n'a cessé de redéfinir les standards de l'éducation privée au Maroc. Chaque brique de notre campus raconte une histoire de réussite.
-                    </p>
-                    <div class="w-20 h-1 bg-[#D97706]"></div>
-                </div>
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row gap-16">
+          <!-- Title Block -->
+          <div class="md:w-1/3 scroll-reveal sticky top-32 h-fit">
+            <span class="text-[#D97706] font-bold tracking-widest uppercase text-sm block mb-4">Notre Histoire</span>
+            <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-[#0F172A] mb-8 leading-tight">25 Ans <br /> <span class="text-slate-400">d'Excellence.</span></h2>
+            <p class="text-slate-600 leading-relaxed mb-8">Depuis notre fondation en 1998, CampusFlow n'a cessé de redéfinir les standards de l'éducation privée au Maroc. Chaque brique de notre campus raconte une histoire de réussite.</p>
+            <div class="w-20 h-1 bg-[#D97706]"></div>
+          </div>
 
-                <!-- Timeline Block -->
-                <div class="md:w-2/3 space-y-20 border-l border-[#D97706]/20 pl-8 md:pl-16 relative">
-                    <!-- Item 1 -->
-                    <div class="relative scroll-reveal delay-100 group">
-                        <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#D97706] group-hover:scale-125 transition-transform bg-[#D97706]"></div>
-                        <span class="text-6xl font-heading font-black text-[#D97706]/10 absolute -top-10 -left-6 z-0 pointer-events-none select-none">1998</span>
-                        <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">La Fondation</h3>
-                        <p class="text-slate-600">Trois classes visionnaires ouvrent leurs portes. L'objectif était simple mais audacieux : offrir une pédagogie où l'enfant est acteur de son savoir.</p>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="relative scroll-reveal delay-200 group">
-                        <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#0F172A] group-hover:scale-125 transition-transform"></div>
-                        <span class="text-6xl font-heading font-black text-[#0F172A]/5 absolute -top-10 -left-6 z-0 pointer-events-none select-none">2010</span>
-                        <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">L'Expansion</h3>
-                        <p class="text-slate-600">Inauguration du Campus Vert. 2 hectares dédiés au sport, aux sciences et à la nature, certifiés HQE (Haute Qualité Environnementale).</p>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="relative scroll-reveal delay-300 group">
-                        <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#E11D48] group-hover:scale-125 transition-transform"></div>
-                        <span class="text-6xl font-heading font-black text-[#E11D48]/10 absolute -top-10 -left-6 z-0 pointer-events-none select-none">2024</span>
-                        <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">L'Ère Digitale</h3>
-                        <p class="text-slate-600">CampusFlow devient 100% connecté. Tablettes, robotique et suivi parentale en temps réel via notre plateforme exclusive.</p>
-                    </div>
-                </div>
+          <!-- Timeline Block -->
+          <div class="md:w-2/3 space-y-20 border-l border-[#D97706]/20 pl-8 md:pl-16 relative">
+            <!-- Item 1 -->
+            <div class="relative scroll-reveal delay-100 group">
+              <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#D97706] group-hover:scale-125 transition-transform bg-[#D97706]"></div>
+              <span class="text-6xl font-heading font-black text-[#D97706]/10 absolute -top-10 -left-6 z-0 pointer-events-none select-none">1998</span>
+              <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">La Fondation</h3>
+              <p class="text-slate-600">Trois classes visionnaires ouvrent leurs portes. L'objectif était simple mais audacieux : offrir une pédagogie où l'enfant est acteur de son savoir.</p>
             </div>
+
+            <!-- Item 2 -->
+            <div class="relative scroll-reveal delay-200 group">
+              <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#0F172A] group-hover:scale-125 transition-transform"></div>
+              <span class="text-6xl font-heading font-black text-[#0F172A]/5 absolute -top-10 -left-6 z-0 pointer-events-none select-none">2010</span>
+              <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">L'Expansion</h3>
+              <p class="text-slate-600">Inauguration du Campus Vert. 2 hectares dédiés au sport, aux sciences et à la nature, certifiés HQE (Haute Qualité Environnementale).</p>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="relative scroll-reveal delay-300 group">
+              <div class="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 rounded-full bg-[#FFFBEB] border-4 border-[#E11D48] group-hover:scale-125 transition-transform"></div>
+              <span class="text-6xl font-heading font-black text-[#E11D48]/10 absolute -top-10 -left-6 z-0 pointer-events-none select-none">2024</span>
+              <h3 class="text-2xl font-bold text-[#0F172A] mb-4 relative z-10">L'Ère Digitale</h3>
+              <p class="text-slate-600">CampusFlow devient 100% connecté. Tablettes, robotique et suivi parentale en temps réel via notre plateforme exclusive.</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     {# ============================================
        ACT III: THE SPARK (Activities)
-       "Igniting Passions"
+       Dark Section
        ============================================ #}
-    <section id="activities" class="py-32 bg-[#0F172A] text-white overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-20 scroll-reveal">
-                <span class="text-[#E11D48] font-bold tracking-widest uppercase text-sm block mb-4">Extra-Curriculaire</span>
-                <h2 class="text-4xl md:text-6xl font-heading font-black mb-6">Au-delà des Livres.</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto text-lg font-light">
-                    L'excellence académique est notre standard. L'épanouissement personnel est notre promesse.
-                </p>
-            </div>
-
-            <!-- Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[800px] md:h-[600px]">
-                
-                <!-- Large Item: Robotics -->
-                <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-sm scroll-reveal delay-100">
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Tech">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent opacity-90"></div>
-                    <div class="absolute bottom-0 left-0 p-8">
-                        <div class="text-[#F59E0B] text-xs font-bold uppercase tracking-widest mb-2">Technologie</div>
-                        <h3 class="text-3xl font-bold mb-2">Club Robotique & IA.</h3>
-                        <p class="text-slate-300 text-sm max-w-xs opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0">
-                            Préparation aux métiers de demain avec des kits Arduino et Python dès le collège.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Wide Item top: Sports -->
-                <div class="md:col-span-2 relative group overflow-hidden rounded-sm scroll-reveal delay-200">
-                    <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Sports">
-                    <div class="absolute inset-0 bg-[#E11D48]/20 group-hover:bg-transparent transition-colors"></div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-[#0F172A] to-transparent">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <h3 class="text-2xl font-bold">Académie Sportive</h3>
-                                <span class="text-xs text-white/60 uppercase tracking-widest">Discipline & Esprit d'équipe</span>
-                            </div>
-                            <i class="fas fa-basketball-ball text-3xl text-white/20 group-hover:text-[#E11D48] transition-colors"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Item: Arts -->
-                <div class="md:col-span-1 relative group overflow-hidden rounded-sm scroll-reveal delay-300">
-                    <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Arts">
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
-                    <div class="absolute bottom-6 left-6">
-                        <h3 class="text-xl font-bold">Arts Vivants</h3>
-                    </div>
-                </div>
-
-                <!-- Small Item: Debate -->
-                <div class="md:col-span-1 bg-[#1E293B] p-8 flex flex-col justify-between group rounded-sm hover:bg-[#D97706] transition-colors duration-500 scroll-reveal delay-400">
-                    <i class="fas fa-bullhorn text-4xl text-[#D97706] group-hover:text-white transition-colors"></i>
-                    <div>
-                        <h3 class="text-xl font-bold mb-2 group-hover:text-white">Débat & Éloquence</h3>
-                        <p class="text-xs text-slate-400 group-hover:text-white/80 leading-relaxed">
-                            Apprendre à convaincre, structurer sa pensée et prendre la parole en public.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
+    <section id="activities" class="py-32 bg-[#0F172A] text-white overflow-hidden relative">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-20 scroll-reveal">
+          <span class="text-[#E11D48] font-bold tracking-widest uppercase text-sm block mb-4">Extra-Curriculaire</span>
+          <h2 class="text-4xl md:text-6xl font-heading font-black mb-6">Au-delà des Livres.</h2>
+          <p class="text-slate-400 max-w-2xl mx-auto text-lg font-light">L'excellence académique est notre standard. L'épanouissement personnel est notre promesse.</p>
         </div>
+
+        <!-- Bento Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[800px] md:h-[600px]">
+          <!-- Large Item: Robotics -->
+          <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-sm scroll-reveal delay-100">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Tech" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent opacity-90"></div>
+            <div class="absolute bottom-0 left-0 p-8">
+              <div class="text-[#F59E0B] text-xs font-bold uppercase tracking-widest mb-2">Technologie</div>
+              <h3 class="text-3xl font-bold mb-2">Club Robotique & IA.</h3>
+              <p class="text-slate-300 text-sm max-w-xs opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0">Préparation aux métiers de demain avec des kits Arduino et Python dès le collège.</p>
+            </div>
+          </div>
+
+          <!-- Wide Item top: Sports -->
+          <div class="md:col-span-2 relative group overflow-hidden rounded-sm scroll-reveal delay-200">
+            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Sports" />
+            <div class="absolute inset-0 bg-[#E11D48]/20 group-hover:bg-transparent transition-colors"></div>
+            <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-[#0F172A] to-transparent">
+              <div class="flex justify-between items-end">
+                <div>
+                  <h3 class="text-2xl font-bold">Académie Sportive</h3>
+                  <span class="text-xs text-white/60 uppercase tracking-widest">Discipline & Esprit d'équipe</span>
+                </div>
+                <i class="fas fa-basketball-ball text-3xl text-white/20 group-hover:text-[#E11D48] transition-colors"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small Item: Arts -->
+          <div class="md:col-span-1 relative group overflow-hidden rounded-sm scroll-reveal delay-300">
+            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Arts" />
+            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+            <div class="absolute bottom-6 left-6">
+              <h3 class="text-xl font-bold">Arts Vivants</h3>
+            </div>
+          </div>
+
+          <!-- Small Item: Debate -->
+          <div class="md:col-span-1 relative group overflow-hidden rounded-sm scroll-reveal delay-400">
+            <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Debate" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/80 to-transparent"></div>
+            <div class="absolute inset-0 p-8 flex flex-col justify-between">
+              <i class="fas fa-bullhorn text-4xl text-[#D97706] group-hover:text-[#F59E0B] transition-colors"></i>
+              <div>
+                <h3 class="text-xl font-bold mb-2 text-white">Débat & Éloquence</h3>
+                <p class="text-xs text-slate-300 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500">Apprendre à convaincre, structurer sa pensée et prendre la parole en public.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     {# ============================================
        ACT IV: THE ADVANTAGE (Hard Sell)
-       "Why Us?"
+       Light Section (Cream Background)
        ============================================ #}
-    <section class="py-32 bg-[#FFFBEB] text-[#0F172A]">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col lg:flex-row gap-20 items-center">
-                <!-- Hard Facts -->
-                <div class="lg:w-1/2 scroll-reveal">
-                    <h2 class="text-4xl md:text-5xl font-heading font-black mb-12">
-                        Les chiffres ne <br/>mentent pas.
-                    </h2>
-                    
-                    <div class="space-y-10">
-                        <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
-                            <span class="text-6xl font-heading font-black text-[#0F172A]">98<span class="text-[#D97706] text-4xl">%</span></span>
-                            <div>
-                                <h4 class="font-bold text-lg uppercase tracking-wider">Admission Universitaire</h4>
-                                <p class="text-slate-500 text-sm">Dans les grandes écoles internationales.</p>
-                            </div>
-                        </div>
+    <section class="py-32 bg-[#FFFBEB] text-[#0F172A] relative">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row gap-20 items-center">
+          <!-- Hard Facts -->
+          <div class="lg:w-1/2 scroll-reveal">
+            <h2 class="text-4xl md:text-5xl font-heading font-black mb-12">Les chiffres ne <br />mentent pas.</h2>
 
-                        <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
-                            <span class="text-6xl font-heading font-black text-[#0F172A]">15<span class="text-[#D97706] text-4xl">:1</span></span>
-                            <div>
-                                <h4 class="font-bold text-lg uppercase tracking-wider">Ratio Élève/Prof</h4>
-                                <p class="text-slate-500 text-sm">Un suivi ultra-personnalisé garanti.</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
-                            <span class="text-6xl font-heading font-black text-[#0F172A]">3<span class="text-[#D97706] text-4xl">+</span></span>
-                            <div>
-                                <h4 class="font-bold text-lg uppercase tracking-wider">Langues Maîtrisées</h4>
-                                <p class="text-slate-500 text-sm">Arabe, Français, Anglais (Cambridge certifié).</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="#contact" class="inline-block mt-12 text-[#E11D48] font-bold uppercase tracking-widest text-sm hover:underline underline-offset-8">
-                        Voir le rapport annuel <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
+            <div class="space-y-10">
+              <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
+                <span class="text-6xl font-heading font-black text-[#0F172A]">98<span class="text-[#D97706] text-4xl">%</span></span>
+                <div>
+                  <h4 class="font-bold text-lg uppercase tracking-wider">Admission Universitaire</h4>
+                  <p class="text-slate-500 text-sm">Dans les grandes écoles internationales.</p>
                 </div>
+              </div>
 
-                <!-- Visual Comparison -->
-                <div class="lg:w-1/2 relative h-[500px] w-full scroll-reveal delay-200">
-                    <div class="absolute inset-0 bg-[#0F172A] transform rotate-3 rounded-sm"></div>
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center grayscale opacity-60 hover:opacity-100 transition-opacity duration-700"></div>
-                    <div class="absolute bottom-8 left-8 right-8 bg-white p-8 shadow-2xl border-l-4 border-[#D97706]">
-                        <p class="font-heading font-bold text-xl italic text-[#0F172A]">
-                            "Choisir CampusFlow, c'est choisir la certitude que mon enfant ne sera pas un numéro, mais une future élite."
-                        </p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="font-bold text-sm uppercase tracking-widest text-slate-400">Dr. Sarah B. - Mère de promo 2023</span>
-                            <div class="text-[#F59E0B]">★★★★★</div>
-                        </div>
-                    </div>
+              <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
+                <span class="text-6xl font-heading font-black text-[#0F172A]">15<span class="text-[#D97706] text-4xl">:1</span></span>
+                <div>
+                  <h4 class="font-bold text-lg uppercase tracking-wider">Ratio Élève/Prof</h4>
+                  <p class="text-slate-500 text-sm">Un suivi ultra-personnalisé garanti.</p>
                 </div>
+              </div>
+
+              <div class="flex items-center gap-8 border-b border-[#0F172A]/10 pb-8 hover:pl-4 transition-all duration-300 cursor-default">
+                <span class="text-6xl font-heading font-black text-[#0F172A]">3<span class="text-[#D97706] text-4xl">+</span></span>
+                <div>
+                  <h4 class="font-bold text-lg uppercase tracking-wider">Langues Maîtrisées</h4>
+                  <p class="text-slate-500 text-sm">Arabe, Français, Anglais (Cambridge certifié).</p>
+                </div>
+              </div>
             </div>
+
+            <a href="#contact" class="inline-block mt-12 text-[#E11D48] font-bold uppercase tracking-widest text-sm hover:underline underline-offset-8">Voir le rapport annuel <i class="fas fa-arrow-right ml-2"></i></a>
+          </div>
+
+          <!-- Visual Comparison -->
+          <div class="lg:w-1/2 relative h-[500px] w-full scroll-reveal delay-200">
+            <div class="absolute inset-0 bg-[#0F172A] transform rotate-3 rounded-sm"></div>
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center grayscale opacity-60 hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="absolute bottom-8 left-8 right-8 bg-white p-8 shadow-2xl border-l-4 border-[#D97706]">
+              <p class="font-heading font-bold text-xl italic text-[#0F172A]">"Choisir CampusFlow, c'est choisir la certitude que mon enfant ne sera pas un numéro, mais une future élite."</p>
+              <div class="mt-4 flex items-center justify-between">
+                <span class="font-bold text-sm uppercase tracking-widest text-slate-400">Dr. Sarah B. - Mère de promo 2023</span>
+                <div class="text-[#F59E0B]">★★★★★</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     {# ============================================
        ACT V: THE CONNECTION (Map & Footer)
-       "Your Journey Begins Here"
+       Dark Section
        ============================================ #}
-    <section id="contact" class="relative bg-[#0F172A] pt-32 pb-12 overflow-hidden">
-        <!-- Map Container as Background -->
-        <div class="absolute top-0 right-0 w-full h-[600px] lg:w-1/2 lg:h-full opacity-50 lg:opacity-80 grayscale invert contrast-125 mix-blend-luminosity pointer-events-none">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.846449108041!2d-7.619225223849156!3d33.58332134237191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7d2e99f4c39b1%3A0x62955562762287c7!2sCasablanca!5e0!3m2!1sen!2sma!4v1709292837222!5m2!1sen!2sma" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
-        
-        <!-- Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-r from-[#0F172A] via-[#0F172A] to-transparent pointer-events-none"></div>
+    <section id="contact" class="relative bg-[#0F172A] pt-32 pb-12 overflow-hidden border-t border-white/5">
+      <!-- Map Container as Background -->
+      <div class="absolute top-0 right-0 w-full h-[600px] lg:w-1/2 lg:h-full opacity-40 lg:opacity-70 grayscale invert contrast-125 mix-blend-luminosity">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.8569420042457!2d-7.6628284!3d33.5826131!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7d37996c5e555%3A0x6e5e5e5e5e5e5e5!2sEMSI%20Casa%20Finance%20City!5e0!3m2!1sfr!2sma!4v1709292837222!5m2!1sfr!2sma" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
 
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="flex flex-col lg:flex-row">
-                <div class="lg:w-1/2 pr-0 lg:pr-20 scroll-reveal">
-                    <h2 class="text-4xl font-heading font-bold text-white mb-8">
-                        Rencontrez la direction.
-                    </h2>
-                    <p class="text-slate-400 mb-12 leading-relaxed">
-                        Les places sont limitées car nous tenons à notre promesse de qualité. Réservez une visite privée pour découvrir le campus.
-                    </p>
+      <!-- Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0F172A] via-[#0F172A] to-transparent pointer-events-none"></div>
 
-                    <div class="space-y-8 mb-12">
-                        <div class="flex items-start gap-6">
-                            <div class="w-12 h-12 rounded-full bg-[#D97706]/10 flex items-center justify-center text-[#D97706] text-xl shrink-0 border border-[#D97706]/20">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Campus Principal</h4>
-                                <p class="text-slate-400">123 Avenue de l'Excellence, Casablanca - Anfa.</p>
-                            </div>
-                        </div>
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col lg:flex-row">
+          <div class="lg:w-1/2 pr-0 lg:pr-20 scroll-reveal">
+            <h2 class="text-4xl md:text-5xl font-heading font-black text-white mb-8">Rencontrez la direction.</h2>
+            <p class="text-slate-400 mb-12 leading-relaxed">Les places sont limitées car nous tenons à notre promesse de qualité. Réservez une visite privée pour découvrir le campus.</p>
 
-                        <div class="flex items-start gap-6">
-                            <div class="w-12 h-12 rounded-full bg-[#D97706]/10 flex items-center justify-center text-[#D97706] text-xl shrink-0 border border-[#D97706]/20">
-                                <i class="fas fa-phone-alt"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Ligne Privée</h4>
-                                <p class="text-slate-400">+212 5 22 99 88 77</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-6">
-                            <div class="w-12 h-12 rounded-full bg-[#E11D48]/10 flex items-center justify-center text-[#E11D48] text-xl shrink-0 border border-[#E11D48]/20">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Admissions</h4>
-                                <p class="text-slate-400">admissions@campusflow.ma</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form class="space-y-4 max-w-md">
-                        <input type="email" placeholder="Votre email pour le dossier" class="w-full bg-white/5 border border-white/10 px-6 py-4 text-white focus:outline-none focus:border-[#D97706] transition-colors rounded-sm">
-                        <button class="w-full bg-white text-[#0F172A] font-bold py-4 uppercase tracking-widest hover:bg-[#D97706] hover:text-white transition-all shadow-lg">
-                            Recevoir la Brochure 2025
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600 uppercase tracking-widest">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">🏛️</span>
-                    <span class="font-bold text-slate-400">CampusFlow</span>
+            <div class="space-y-8 mb-12">
+              <div class="flex items-start gap-6">
+                <div class="w-12 h-12 rounded-full bg-[#D97706]/10 flex items-center justify-center text-[#D97706] text-xl shrink-0 border border-[#D97706]/20">
+                  <i class="fas fa-map-marker-alt"></i>
                 </div>
                 <div>
-                   &copy; {{ "now"|date("Y") }} Excellence in Education.
+                  <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Campus CFC</h4>
+                  <p class="text-slate-400">Angle Bd de l'Aéronautique et Rue de l'Aéroport, CFC, Casablanca.</p>
                 </div>
+              </div>
+
+              <div class="flex items-start gap-6">
+                <div class="w-12 h-12 rounded-full bg-[#D97706]/10 flex items-center justify-center text-[#D97706] text-xl shrink-0 border border-[#D97706]/20">
+                  <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Ligne Privée</h4>
+                  <p class="text-slate-400">+212 5 22 99 88 77</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-6">
+                <div class="w-12 h-12 rounded-full bg-[#E11D48]/10 flex items-center justify-center text-[#E11D48] text-xl shrink-0 border border-[#E11D48]/20">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold uppercase tracking-wider text-sm mb-1">Admissions</h4>
+                  <p class="text-slate-400">admissions@campusflow.ma</p>
+                </div>
+              </div>
             </div>
+
+            <form class="space-y-4 max-w-md p-8 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+              <h4 class="text-white font-bold mb-4">Brochure 2026</h4>
+              <input type="email" placeholder="Votre email pour le dossier" class="w-full bg-[#0F172A] border border-white/10 px-6 py-4 text-white focus:outline-none focus:border-[#D97706] transition-colors rounded-xl" />
+              <button class="w-full bg-[#D97706] text-white font-bold py-4 rounded-xl uppercase tracking-widest hover:bg-[#F59E0B] transition-all shadow-lg">Recevoir le Pack Admission</button>
+            </form>
+          </div>
         </div>
+      </div>
     </section>
 
-</div>
+    <!-- FOOTER -->
+    <footer class="bg-[#0F172A] border-t border-white/5 pt-20 pb-10 relative z-10">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+          <div class="space-y-6">
+            <a href="#" class="flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#D97706] to-[#92400E] flex items-center justify-center text-white shadow-xl shadow-amber-900/40 border border-white/10 group-hover:scale-110 transition-transform duration-500">
+                <span class="text-2xl">🏛️</span>
+              </div>
+              <span class="font-heading font-black text-2xl tracking-tight text-white leading-none">Campus<span class="text-[#F59E0B]">Flow</span></span>
+            </a>
+            <p class="text-slate-400 text-sm leading-relaxed max-w-xs">L'excellence éducative au service des leaders de demain. Membre du réseau international d'excellence depuis 1998.</p>
+            <div class="flex items-center gap-4">
+              <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#D97706] hover:border-[#D97706] transition-all"><i class="fab fa-linkedin-in text-sm"></i></a>
+              <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#D97706] hover:border-[#D97706] transition-all"><i class="fab fa-instagram text-sm"></i></a>
+              <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#D97706] hover:border-[#D97706] transition-all"><i class="fab fa-facebook-f text-sm"></i></a>
+            </div>
+          </div>
 
-<script>
+          <div>
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-8">Navigation</h4>
+            <ul class="space-y-4">
+              <li>
+                <a href="#history" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Notre Héritage</a>
+              </li>
+              <li>
+                <a href="#activities" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Excellence Académique</a>
+              </li>
+              <li>
+                <a href="#contact" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Procédure d'Admission</a>
+              </li>
+              <li>
+                <a href="{{ path('app_login') }}" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Portail Parent/Élève</a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-8">Programmes</h4>
+            <ul class="space-y-4">
+              <li>
+                <a href="#" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Maternelle & Primaire</a>
+              </li>
+              <li>
+                <a href="#" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Collège & Lycée</a>
+              </li>
+              <li>
+                <a href="#" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Baccalauréat International</a>
+              </li>
+              <li>
+                <a href="#" class="text-slate-400 hover:text-[#F59E0B] transition-colors text-sm font-medium">Activités de l'Excellence</a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-8">Campus</h4>
+            <div class="space-y-6">
+              <div class="flex items-start gap-4">
+                <i class="fas fa-map-marker-alt text-[#D97706] mt-1"></i>
+                <p class="text-slate-400 text-sm leading-relaxed">EMSI CFC, Angle Bd de l'Aéronautique, Casablanca.</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <i class="fas fa-headset text-[#D97706]"></i>
+                <p class="text-slate-400 text-sm font-bold tracking-wider">+212 522 98 76 54</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <i class="fas fa-certificate text-rose-500"></i>
+                <p class="text-rose-500 text-[10px] font-black uppercase tracking-widest">Certifié ISO 9001:2015</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div class="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+            <span>&copy; {{ 'now'|date('Y') }} CampusFlow Group. Tous droits réservés.</span>
+            <a href="#" class="hover:text-white transition-colors">Mentions Légales</a>
+            <a href="#" class="hover:text-white transition-colors">Confidentialité</a>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Langue:</span>
+            <button class="text-white text-[10px] font-black underline decoration-[#D97706] decoration-2 underline-offset-4">FR</button>
+            <button class="text-slate-600 text-[10px] font-black hover:text-white transition-colors">EN</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <button id="backToTop" class="fixed bottom-10 right-10 w-14 h-14 bg-[#D97706] text-white rounded-full shadow-2xl flex items-center justify-center opacity-0 translate-y-10 transition-all duration-500 z-[100] hover:bg-[#F59E0B] group"><i class="fas fa-chevron-up group-hover:-translate-y-1 transition-transform"></i></button>
+  </div>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- 1. SCROLL REVEAL ---
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
-
-        // --- 2. CAMPUSBOT CURSOR FOLLOWER ---
-        const bot = document.getElementById('campusBot');
-        const pupil = document.getElementById('botPupil');
-        
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let botX = mouseX;
-        let botY = mouseY;
-        
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        // Animation Loop
-        function animateBot() {
-            // Lerp factor
-            const speed = 0.08;
-            
-            const dx = mouseX - botX;
-            const dy = mouseY - botY;
-            
-            botX += dx * speed;
-            botY += dy * speed;
-            
-            // Calculate tilt 
-            const tiltX = dx * 0.1;
-            const tiltY = dy * 0.1;
-            
-            // Offset to sit next to cursor
-            const offsetX = 40;
-            const offsetY = 40;
-
-            // Apply transform to bot container
-            bot.style.transform = `translate(${botX + offsetX}px, ${botY + offsetY}px) rotateY(${tiltX}deg) rotateX(${-tiltY}deg)`;
-            
-            // Move pupil to look at cursor
-            // The pupil is inside the eye socket, we limit its movement range
-            const lookX = Math.max(-10, Math.min(10, dx * 0.1));
-            const lookY = Math.max(-10, Math.min(10, dy * 0.1));
-            
-            if(pupil) {
-                pupil.style.transform = `translate(${lookX}px, ${lookY}px)`;
+      // --- 1. SCROLL REVEAL ---
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible')
+              observer.unobserve(entry.target)
             }
-
-            requestAnimationFrame(animateBot);
+          })
+        },
+        { threshold: 0.1 }
+      )
+    
+      document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el))
+    
+      // --- 2. CAMPUSBOT CURSOR FOLLOWER ---
+      const bot = document.getElementById('campusBot')
+      const pupil = document.getElementById('botPupil')
+    
+      let mouseX = window.innerWidth / 2
+      let mouseY = window.innerHeight / 2
+      let botX = mouseX
+      let botY = mouseY
+    
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX
+        mouseY = e.clientY
+      })
+    
+      function animateBot() {
+        const speed = 0.08
+    
+        const dx = mouseX - botX
+        const dy = mouseY - botY
+    
+        botX += dx * speed
+        botY += dy * speed
+    
+        const tiltX = dx * 0.1
+        const tiltY = dy * 0.1
+    
+        const offsetX = 40
+        const offsetY = 40
+    
+        bot.style.transform = `translate(${botX + offsetX}px, ${botY + offsetY}px) rotateY(${tiltX}deg) rotateX(${-tiltY}deg)`
+    
+        const lookX = Math.max(-10, Math.min(10, dx * 0.1))
+        const lookY = Math.max(-10, Math.min(10, dy * 0.1))
+    
+        if (pupil) {
+          pupil.style.transform = `translate(${lookX}px, ${lookY}px)`
         }
-        
-        if(bot) animateBot();
-
-
-        // --- 3. HERO CANVAS NETWORK ANIMATION ---
-        const canvas = document.getElementById('heroCanvas');
-        if(canvas) {
-            const ctx = canvas.getContext('2d');
-            let width, height;
-            let particles = [];
-            
-            // Configuration
-            const particleCount = 60;
-            const connectionDistance = 150;
-            const mouseDistance = 200;
-
-            function resize() {
-                width = canvas.width = canvas.parentElement.offsetWidth;
-                height = canvas.height = canvas.parentElement.offsetHeight;
-            }
-            
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 0.5;
-                    this.vy = (Math.random() - 0.5) * 0.5;
-                    this.size = Math.random() * 2 + 1;
-                    this.color = Math.random() > 0.5 ? '#F59E0B' : '#3A86FF'; // Gold or Blue
-                }
-
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-
-                    // Bounce off edges
-                    if (this.x < 0 || this.x > width) this.vx *= -1;
-                    if (this.y < 0 || this.y > height) this.vy *= -1;
-
-                    // Mouse Interaction
-                    const dx = mouseX - this.x;
-                    const dy = mouseY - this.y; 
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < mouseDistance) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        const force = (mouseDistance - distance) / mouseDistance;
-                        const directionX = forceDirectionX * force * 0.5;
-                        const directionY = forceDirectionY * force * 0.5;
-                        this.vx -= directionX;
-                        this.vy -= directionY;
-                    }
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                }
-            }
-
-            function initParticles() {
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }
-
-            function animateCanvas() {
-                ctx.clearRect(0, 0, width, height);
-                
-                // Draw connections
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx*dx + dy*dy);
-
-                        if (distance < connectionDistance) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(58, 134, 255, ${1 - distance/connectionDistance})`;
-                            ctx.lineWidth = 1;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-
-                // Update and draw particles
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-
-                requestAnimationFrame(animateCanvas);
-            }
-
-            window.addEventListener('resize', () => {
-                resize();
-                initParticles();
-            });
-            
-            resize();
-            initParticles();
-            animateCanvas();
+    
+        requestAnimationFrame(animateBot)
+      }
+    
+      if (bot) animateBot()
+    
+      // --- 3. HERO CANVAS NETWORK ANIMATION ---
+      const canvas = document.getElementById('heroCanvas')
+      if (canvas) {
+        const ctx = canvas.getContext('2d')
+        let width, height
+        let particles = []
+    
+        const particleCount = 60
+        const connectionDistance = 150
+        const mouseDistance = 200
+    
+        function resize() {
+          width = canvas.width = canvas.parentElement.offsetWidth
+          height = canvas.height = canvas.parentElement.offsetHeight
         }
-    });
-</script>
+    
+        class Particle {
+          constructor() {
+            this.x = Math.random() * width
+            this.y = Math.random() * height
+            this.vx = (Math.random() - 0.5) * 0.5
+            this.vy = (Math.random() - 0.5) * 0.5
+            this.size = Math.random() * 2 + 1
+            this.color = Math.random() > 0.5 ? '#F59E0B' : '#3A86FF'
+          }
+    
+          update() {
+            this.x += this.vx
+            this.y += this.vy
+    
+            if (this.x < 0 || this.x > width) this.vx *= -1
+            if (this.y < 0 || this.y > height) this.vy *= -1
+    
+            const dx = mouseX - this.x
+            const dy = mouseY - this.y
+            const distance = Math.sqrt(dx * dx + dy * dy)
+    
+            if (distance < mouseDistance) {
+              const forceDirectionX = dx / distance
+              const forceDirectionY = dy / distance
+              const force = (mouseDistance - distance) / mouseDistance
+              const directionX = forceDirectionX * force * 0.5
+              const directionY = forceDirectionY * force * 0.5
+              this.vx -= directionX
+              this.vy -= directionY
+            }
+          }
+    
+          draw() {
+            ctx.beginPath()
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+            ctx.fillStyle = this.color
+            ctx.fill()
+          }
+        }
+    
+        function initParticles() {
+          particles = []
+          for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle())
+          }
+        }
+    
+        function animateCanvas() {
+          ctx.clearRect(0, 0, width, height)
+    
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x
+              const dy = particles[i].y - particles[j].y
+              const distance = Math.sqrt(dx * dx + dy * dy)
+    
+              if (distance < connectionDistance) {
+                ctx.beginPath()
+                ctx.strokeStyle = `rgba(58, 134, 255, ${1 - distance / connectionDistance})`
+                ctx.lineWidth = 1
+                ctx.moveTo(particles[i].x, particles[i].y)
+                ctx.lineTo(particles[j].x, particles[j].y)
+                ctx.stroke()
+              }
+            }
+          }
+    
+          particles.forEach((p) => {
+            p.update()
+            p.draw()
+          })
+    
+          requestAnimationFrame(animateCanvas)
+        }
+    
+        window.addEventListener('resize', () => {
+          resize()
+          initParticles()
+        })
+    
+        resize()
+        initParticles()
+        animateCanvas()
+      }
+    
+      // --- 4. BACK TO TOP ---
+      const btt = document.getElementById('backToTop')
+      if (btt) {
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 1000) {
+            btt.style.opacity = '1'
+            btt.style.transform = 'translateY(0)'
+          } else {
+            btt.style.opacity = '0'
+            btt.style.transform = 'translateY(40px)'
+          }
+        })
+        btt.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+      }
+    })
+  </script>
 {% endblock %}

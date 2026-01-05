@@ -16,6 +16,17 @@ class ClasseRepository extends ServiceEntityRepository
         parent::__construct($registry, Classe::class);
     }
 
+    public function findByNameOrField(string $query): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.name LIKE :q')
+            ->orWhere('c.field LIKE :q')
+            ->orWhere('c.level LIKE :q')
+            ->setParameter('q', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Classe[] Returns an array of Classe objects
     //     */

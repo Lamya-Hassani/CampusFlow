@@ -2,18 +2,163 @@
 
 {% block title %}Modifier Enseignant - CampusFlow{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="px-4 py-6 sm:px-0">
-    <div class="mb-6"><a href="{{ path('admin_teacher_index') }}" class="text-indigo-600">← Retour</a></div>
-    <h1 class="text-3xl font-bold mb-6">Modifier enseignant</h1>
-    <div class="bg-white shadow rounded-lg p-6">
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <div class="flex justify-end space-x-3 mt-6">
-                <a href="{{ path('admin_teacher_index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</a>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+<div class="min-h-[calc(100vh-5rem)] bg-slate-50 text-[#0F172A] relative font-sans flex flex-col p-4 md:p-8 overflow-y-auto">
+    
+    <!-- Background Decor -->
+    <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#8B5CF6]/5 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto w-full z-10">
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-up">
+            <a href="{{ path('admin_teacher_index') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#8B5CF6] transition-colors mb-4 text-xs font-bold uppercase tracking-wide group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour à la liste
+            </a>
+
+            <div class="flex items-center gap-6">
+                <!-- Profile Picture or Initials -->
+                <div class="w-20 h-20 rounded-2xl bg-[#0F172A] text-white flex items-center justify-center shadow-lg border-2 border-white/50 overflow-hidden">
+                    {% if teacher.profilePicture %}
+                        <img src="{{ asset(teacher.profilePicture) }}" alt="Photo" class="w-full h-full object-cover">
+                    {% else %}
+                        <span class="text-2xl font-black">{{ teacher.firstName|first }}{{ teacher.lastName|first }}</span>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-heading font-black text-[#0F172A] tracking-tight leading-none mb-1">
+                        Modifier Enseignant
+                    </h1>
+                    <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">{{ teacher.fullName }}</p>
+                </div>
             </div>
-        {{ form_end(form) }}
+        </div>
+
+        <!-- Form Card -->
+        <div class="animate-fade-up" style="animation-delay: 100ms;">
+            {{ form_start(form, {'attr': {'class': 'bg-white rounded-[2.5rem] shadow-[0_20px_40px_-10px_rgba(15,23,42,0.05)] border border-slate-100 p-8 md:p-10 space-y-8 relative overflow-hidden'}}) }}
+                
+                <!-- Decorative Top Border -->
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D97706] via-[#8B5CF6] to-[#D97706]"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    <!-- Identity Section -->
+                    <div class="col-span-2">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Identité
+                        </h3>
+                    </div>
+
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Prénom</label>
+                        {{ form_widget(form.firstName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Nom</label>
+                        {{ form_widget(form.lastName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+
+                    <!-- Contact & Auth Section -->
+                    <div class="col-span-2 mt-4">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Contact & Accès
+                        </h3>
+                    </div>
+
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Email Professionnel</label>
+                        {{ form_widget(form.email, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="flex justify-between items-center mb-2 ml-1">
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest">Mot de passe</label>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider bg-slate-50 px-2 py-0.5 rounded">Optionnel</span>
+                        </div>
+                        {{ form_widget(form.password, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]', placeholder: 'Laisser vide pour ne pas modifier'}}) }}
+                        {{ form_errors(form.password) }}
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Téléphone</label>
+                        {{ form_widget(form.phone, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+
+                    <!-- Professional Section -->
+                    <div class="col-span-2 mt-4">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Expertise & Grade
+                        </h3>
+                    </div>
+
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Spécialité</label>
+                        {{ form_widget(form.specialty, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
+                        {{ form_errors(form.specialty) }}
+                    </div>
+
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Grade</label>
+                        {{ form_widget(form.grade, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
+                        {{ form_errors(form.grade) }}
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Matières Enseignées</label>
+                        {{ form_widget(form.subjects, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#8B5CF6] focus:ring-4 focus:ring-[#8B5CF6]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A] h-32'}}) }}
+                        {{ form_errors(form.subjects) }}
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Photo de Profil</label>
+                        <div class="mt-1 flex flex-col md:flex-row items-center gap-6 p-6 border-2 border-slate-100 border-dashed rounded-2xl hover:border-[#8B5CF6]/30 transition-colors bg-slate-50/30">
+                            {% if teacher.profilePicture %}
+                                <div class="w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0 animate-scale-in">
+                                    <img src="{{ asset(teacher.profilePicture) }}" alt="Photo actuelle" class="w-full h-full object-cover">
+                                </div>
+                            {% endif %}
+                            <div class="flex-1 text-center md:text-left space-y-1">
+                                <div class="flex flex-col text-sm text-slate-600">
+                                    {{ form_widget(form.profilePicture, {attr: {class: 'cursor-pointer font-bold text-[#8B5CF6] hover:text-purple-600'}}) }}
+                                </div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">JPEG, PNG up to 2MB. Leave empty to keep current picture.</p>
+                            </div>
+                        </div>
+                        {{ form_errors(form.profilePicture) }}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-8 flex items-center justify-end gap-4 border-t border-slate-50 mt-4">
+                    <a href="{{ path('admin_teacher_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm">
+                        Annuler
+                    </a>
+                    <button type="submit" class="bg-[#8B5CF6] hover:bg-purple-600 text-white px-10 py-3.5 rounded-xl font-bold shadow-lg shadow-purple-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        Mettre à jour le dossier
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
     </div>
 </div>
 {% endblock %}

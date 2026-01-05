@@ -23,11 +23,12 @@ class ScheduleType extends AbstractType
             ->add('dayOfWeek', ChoiceType::class, [
                 'label' => 'Jour de la semaine',
                 'choices' => [
-                    'Lundi' => 'Lundi',
-                    'Mardi' => 'Mardi',
-                    'Mercredi' => 'Mercredi',
-                    'Jeudi' => 'Jeudi',
-                    'Vendredi' => 'Vendredi',
+                    'Lundi' => 'Monday',
+                    'Mardi' => 'Tuesday',
+                    'Mercredi' => 'Wednesday',
+                    'Jeudi' => 'Thursday',
+                    'Vendredi' => 'Friday',
+                    'Samedi' => 'Saturday',
                 ],
                 'attr' => ['class' => 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500']
             ])

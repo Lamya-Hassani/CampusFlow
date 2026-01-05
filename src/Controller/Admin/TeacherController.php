@@ -25,14 +25,18 @@ class TeacherController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(TeacherRepository $teacherRepository): Response
+    public function index(TeacherRepository $teacherRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $teachers = $teacherRepository->findAll();
+        $search = $request->query->get('search');
+        $teachers = $search
+            ? $teacherRepository->findByNameOrEmail($search)
+            : $teacherRepository->findAll();
 
         return $this->render('admin/teacher/index.html.twig', [
             'teachers' => $teachers,
+            'search' => $search,
         ]);
     }
 

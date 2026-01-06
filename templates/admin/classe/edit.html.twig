@@ -22,7 +22,7 @@
     <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#3A86FF]/5 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
     <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <div class="max-w-4xl mx-auto w-full z-10">
+    <div class="max-w-7xl mx-auto w-full z-10">
         <!-- Header Section -->
         <div class="mb-8 animate-fade-up">
             <a href="{{ path('admin_classe_index') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#3A86FF] transition-colors mb-4 text-xs font-bold uppercase tracking-wide group">
@@ -50,72 +50,74 @@
                 <!-- Decorative Top Border -->
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D97706] via-[#3A86FF] to-[#D97706]"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <!-- Basic Info Section -->
-                    <div class="col-span-2">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Informations Générales
+                <!-- 3-COLUMN LAYOUT -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    
+                    <!-- COLUMN 1: INFORMATIONS GÉNÉRALES -->
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Informations Générales
                         </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Nom de la Classe</label>
+                            {{ form_widget(form.name, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-black text-[#0F172A]'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Année Universitaire</label>
+                            {{ form_widget(form.academicYear, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.academicYear) }}
+                        </div>
                     </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Nom de la Classe</label>
-                        {{ form_widget(form.name, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-black text-[#0F172A]'}}) }}
-                        {{ form_errors(form.name) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Année Universitaire</label>
-                        {{ form_widget(form.academicYear, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.academicYear) }}
-                    </div>
-
-                    <!-- Curriculum Section -->
-                    <div class="col-span-2 mt-4">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Cursus & Niveau
+                    <!-- COLUMN 2: CURSUS & NIVEAU -->
+                    <div class="space-y-5 lg:border-l lg:border-slate-100 lg:pl-10">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Cursus & Niveau
                         </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Filière</label>
+                            {{ form_widget(form.field, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.field) }}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Niveau</label>
+                            {{ form_widget(form.level, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.level) }}
+                        </div>
                     </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Filière</label>
-                        {{ form_widget(form.field, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.field) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Niveau</label>
-                        {{ form_widget(form.level, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.level) }}
-                    </div>
-
-                    <!-- Management Section -->
-                    <div class="col-span-2 mt-4">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Gestion & Capacité
+                    <!-- COLUMN 3: GESTION & CAPACITÉ -->
+                    <div class="space-y-5 lg:border-l lg:border-slate-100 lg:pl-10">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Gestion & Capacité
                         </h3>
-                    </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Capacité Maximale</label>
-                        {{ form_widget(form.maxCapacity, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.maxCapacity) }}
-                    </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Capacité Maximale</label>
+                            {{ form_widget(form.maxCapacity, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.maxCapacity) }}
+                        </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Responsable Pédagogique</label>
-                        {{ form_widget(form.supervisor, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.supervisor) }}
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Responsable Pédagogique</label>
+                            {{ form_widget(form.supervisor, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.supervisor) }}
+                        </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="pt-8 flex items-center justify-end gap-4 border-t border-slate-50 mt-4">
-                    <a href="{{ path('admin_classe_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm">
+                    <a href="{{ path('admin_classe_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm border-2 border-transparent hover:border-slate-100">
                         Annuler
                     </a>
                     <button type="submit" class="bg-[#3A86FF] hover:bg-blue-600 text-white px-10 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-white/50"></i>
+                        <i class="fa-solid fa-cloud-arrow-up text-white/90"></i>
                         Enregistrer les modifications
                     </button>
                 </div>
@@ -124,4 +126,3 @@
     </div>
 </div>
 {% endblock %}
-

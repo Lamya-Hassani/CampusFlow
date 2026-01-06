@@ -125,7 +125,7 @@
                 {% if app.user %}
                     <div class="bg-blue-50 border-l-4 border-[#3A86FF] text-[#0F172A] p-4 mb-6 rounded-r text-sm">
                         Vous êtes déjà connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.
-                        <a href="{{ path('app_logout') }}" class="block mt-2 text-[#3A86FF] font-bold hover:underline">Se déconnecter</a>
+                        <a href="{{ path('app_logout') }}" data-turbo="false" class="block mt-2 text-[#3A86FF] font-bold hover:underline">Se déconnecter</a>
                     </div>
                 {% endif %}
 
@@ -179,7 +179,7 @@
 </div>
 
 <script>
-    function togglePassword() {
+    window.togglePassword = () => {
         const passwordInput = document.getElementById('inputPassword');
         const toggleIcon = document.getElementById('toggleIcon');
         if (passwordInput.type === 'password') {
@@ -192,7 +192,7 @@
     }
 
     // --- Background Particles Animation (Playful School Theme) ---
-    document.addEventListener('DOMContentLoaded', () => {
+    window.pageInit = () => {
         const canvas = document.getElementById('loginCanvas');
         if (!canvas) return;
         
@@ -204,6 +204,7 @@
         const icons = ['📐', '🔬', '🎨', '🎵', '⚽', '📚', '✏️', '🧬', '💻', '🎒', '🧠', '🌍'];
         
         function resize() {
+            if (!canvas.parentElement) return;
             width = canvas.width = canvas.offsetWidth;
             height = canvas.height = canvas.offsetHeight;
         }
@@ -270,26 +271,38 @@
 
         let mouseX = null;
         let mouseY = null;
-        window.addEventListener('mousemove', (e) => {
+        const moveHandler = (e) => {
             const rect = canvas.getBoundingClientRect();
             mouseX = e.clientX - rect.left;
             mouseY = e.clientY - rect.top;
-        });
-        window.addEventListener('mouseleave', () => { mouseX = null; mouseY = null; });
+        }
+        window.addEventListener('mousemove', moveHandler);
 
+        const leaveHandler = () => { mouseX = null; mouseY = null; }
+        window.addEventListener('mouseleave', leaveHandler);
+
+        let animationId;
         function animate() {
             ctx.clearRect(0, 0, width, height);
             particles.forEach(p => { 
                 p.update(mouseX, mouseY); 
                 p.draw(); 
             });
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
         }
 
-        window.addEventListener('resize', () => { resize(); init(); });
+        const resizeHandler = () => { resize(); init(); }
+        window.addEventListener('resize', resizeHandler);
         resize();
         init();
         animate();
-    });
+
+        document.addEventListener('turbo:before-cache', () => {
+            window.removeEventListener('mousemove', moveHandler);
+            window.removeEventListener('mouseleave', leaveHandler);
+            window.removeEventListener('resize', resizeHandler);
+            cancelAnimationFrame(animationId);
+        }, { once: true });
+    };
 </script>
 {% endblock %}

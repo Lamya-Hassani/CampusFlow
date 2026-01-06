@@ -1,20 +1,107 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier Matière - CampusFlow{% endblock %}
+{% block title %}Modifier la Matière - CampusFlow{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="px-4 py-6 sm:px-0">
-    <div class="mb-6"><a href="{{ path('admin_subject_index') }}" class="text-indigo-600">← Retour</a></div>
-    <h1 class="text-3xl font-bold mb-6">Modifier matière</h1>
-    <div class="bg-white shadow rounded-lg p-6">
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <div class="flex justify-end space-x-3 mt-6">
-                <a href="{{ path('admin_subject_index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</a>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+<div class="min-h-[calc(100vh-5rem)] bg-slate-50 text-[#0F172A] relative font-sans flex flex-col p-4 md:p-8 overflow-y-auto">
+    
+    <!-- Background Decor -->
+    <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#0F172A]/5 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto w-full z-10">
+        
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-up">
+            <a href="{{ path('admin_subject_index') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#D97706] transition-colors mb-4 text-xs font-bold uppercase tracking-wide group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour à la liste
+            </a>
+
+            <div class="flex items-center gap-6">
+                <!-- Icon Box -->
+                <div class="w-16 h-16 rounded-2xl bg-[#0F172A] text-white flex items-center justify-center shadow-lg border-2 border-white/50">
+                    <i class="fa-solid fa-pen-nib text-xl text-[#D97706]"></i>
+                </div>
+                
+                <div>
+                    <h1 class="text-3xl font-heading font-black text-[#0F172A] tracking-tight leading-none mb-1">
+                        Modifier Matière
+                    </h1>
+                    <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">{{ subject.name }}</p>
+                </div>
             </div>
-        {{ form_end(form) }}
+        </div>
+
+        <!-- Form Card -->
+        <div class="animate-fade-up" style="animation-delay: 100ms;">
+            {{ form_start(form, {'attr': {'class': 'bg-white rounded-[2.5rem] shadow-[0_20px_40px_-10px_rgba(15,23,42,0.05)] border border-slate-100 p-8 md:p-10 space-y-8 relative overflow-hidden'}}) }}
+                
+                <!-- Decorative Top Border -->
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D97706] via-[#0F172A] to-[#D97706]"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    
+                    <!-- Decorative Section Title -->
+                    <div class="col-span-2">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-2 flex items-center gap-3">
+                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Informations & Paramètres
+                        </h3>
+                    </div>
+
+                    <!-- 1. Name (Full Width) -->
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Nom du Module</label>
+                        {{ form_widget(form.name, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 transition-all p-4 text-sm font-bold text-[#0F172A]', placeholder: 'Ex: Mathématiques Avancées'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+
+                    <!-- 2. Code -->
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Code Matière</label>
+                        {{ form_widget(form.code, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#0F172A] focus:ring-4 focus:ring-[#0F172A]/10 transition-all p-4 text-sm font-mono font-bold text-[#0F172A]', placeholder: 'MATH101'}}) }}
+                        {{ form_errors(form.code) }}
+                    </div>
+
+                    <!-- 3. Coefficient -->
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Coefficient</label>
+                        {{ form_widget(form.coefficient, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 transition-all p-4 text-sm font-bold text-[#0F172A]', placeholder: '2'}}) }}
+                        {{ form_errors(form.coefficient) }}
+                    </div>
+
+                    <!-- 4. Description (ADDED HERE explicitely) -->
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Description</label>
+                        {{ form_widget(form.description, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#0F172A] focus:ring-4 focus:ring-[#0F172A]/10 transition-all p-4 text-sm font-medium text-[#0F172A]', rows: 4}}) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-8 flex items-center justify-end gap-4 border-t border-slate-50 mt-4">
+                    <a href="{{ path('admin_subject_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm border-2 border-transparent hover:border-slate-100">
+                        Annuler
+                    </a>
+                    <button type="submit" class="bg-[#0F172A] hover:bg-black text-white px-10 py-3.5 rounded-xl font-bold shadow-lg shadow-slate-900/20 transition-all hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-save text-[#D97706]"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
     </div>
 </div>
 {% endblock %}
-

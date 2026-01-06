@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning Enseignant - {{ teacher.fullName }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="h-[calc(100vh-5rem)] bg-slate-50 p-4 md:p-6 overflow-hidden">
+    
+    <div class="flex flex-col h-full max-w-[1920px] mx-auto">
+        
+        <!-- Page Header -->
+        <div class="flex justify-between items-end mb-6 shrink-0 px-2">
+            <div>
+                <a href="{{ path('admin_teacher_show', {id: teacher.id}) }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#3A86FF] transition-colors mb-2 text-xs font-bold uppercase tracking-wide group">
+                    <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour au profil
+                </a>
+                <span class="text-[#D97706] text-xs font-bold uppercase tracking-widest mb-1 block">Emploi du Temps</span>
+                <h1 class="text-3xl font-heading font-black text-[#0F172A]">
+                    {{ teacher.firstName }} {{ teacher.lastName }} <span class="text-slate-300 font-light text-2xl ml-2">{{ teacher.specialty }}</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- The Grid Card -->
+        <div class="flex-1 bg-white rounded-3xl shadow-[0_10px_40px_-15px_rgba(15,23,42,0.1)] border border-slate-200 overflow-hidden flex flex-col relative">
+            
+            <!-- Days Header (Fixed) -->
+            <div class="grid grid-cols-6 border-b border-slate-100 bg-slate-50/80 backdrop-blur-sm z-10 shrink-0">
+                {% for day, label in {
+                    'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 
+                    'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi'
+                } %}
+                    <div class="py-3 text-center border-r border-slate-100 last:border-0">
+                        <span class="block text-xs font-black text-slate-400 uppercase tracking-widest">{{ label }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Calendar Grid (Scrollable) -->
+            <div class="flex-1 overflow-y-auto custom-scroll p-2">
+                <div class="grid grid-cols-6 h-full min-h-[600px] gap-2">
+                    {% for dayEnglish, dayFrench in {
+                        'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 
+                        'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi'
+                    } %}
+                        <div class="space-y-2 h-full rounded-xl p-1 transition-colors hover:bg-slate-50">
+                            {% for schedule in weekCalendar[dayEnglish] %}
+                                
+                                {# COLOR LOGIC #}
+                                {% set isCM = (schedule.courseType == 'CM' or schedule.courseType == 'Cours') %}
+                                {% set isTP = (schedule.courseType == 'TP') %}
+                                
+                                {% set typeColor = isCM ? '#F59E0B' : (isTP ? '#3A86FF' : '#10B981') %}
+                                {% set bgColor = isCM ? 'bg-amber-50' : (isTP ? 'bg-blue-50' : 'bg-emerald-50') %}
+                                
+                                <div class="group relative bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer overflow-hidden {{ bgColor }}">
+                                    
+                                    <!-- Left Stripe -->
+                                    <div class="absolute left-0 top-0 bottom-0 w-1.5 transition-all group-hover:w-2" style="background-color: {{ typeColor }}"></div>
+
+                                    <div class="pl-2">
+                                        <!-- Header: Time & Type -->
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-xs font-bold bg-white/80 px-2 py-0.5 rounded text-[#0F172A] border border-slate-100">
+                                                {{ schedule.startTime|date('H:i') }}
+                                            </span>
+                                            <span class="text-[10px] font-black uppercase tracking-wider opacity-70" style="color: {{ typeColor }}">
+                                                {{ schedule.courseType }}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Subject -->
+                                        <h4 class="font-bold text-[#0F172A] text-sm leading-tight mb-2.5 line-clamp-2">
+                                            {{ schedule.subject.name }}
+                                        </h4>
+                                        
+                                        <!-- Footer: Classe & Room -->
+                                        <div class="flex items-center justify-between border-t border-slate-200/50 pt-2.5 mt-1">
+                                            <div class="flex items-center gap-1.5">
+                                                <div class="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-500 border border-slate-100">
+                                                    {{ schedule.classe.name|slice(0,1) }}
+                                                </div>
+                                                <span class="text-xs font-bold text-slate-500 truncate max-w-[60px]">{{ schedule.classe.name }}</span>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-400 flex items-center gap-1">
+                                                <i class="fa-solid fa-location-dot text-[10px]" style="color: {{ typeColor }}"></i> {{ schedule.room }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <!-- Empty state for the day -->
+                                <div class="h-24 rounded-xl border-1 border-dashed border-slate-100 opacity-20"></div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

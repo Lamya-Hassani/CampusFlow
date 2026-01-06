@@ -6,6 +6,7 @@ use App\Entity\Teacher;
 use App\Entity\User;
 use App\Form\TeacherType;
 use App\Repository\TeacherRepository;
+use App\Repository\ScheduleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,6 +142,33 @@ class TeacherController extends AbstractController
         return $this->render('admin/teacher/edit.html.twig', [
             'teacher' => $teacher,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/planning', name: 'planning', methods: ['GET'])]
+    public function planning(Teacher $teacher, ScheduleRepository $scheduleRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $schedules = $scheduleRepository->findBy(['teacher' => $teacher], ['startTime' => 'ASC']);
+
+        // Organize schedules by day
+        $weekCalendar = [
+            'Monday' => [],
+            'Tuesday' => [],
+            'Wednesday' => [],
+            'Thursday' => [],
+            'Friday' => [],
+            'Saturday' => [],
+        ];
+
+        foreach ($schedules as $schedule) {
+            $weekCalendar[$schedule->getDayOfWeek()][] = $schedule;
+        }
+
+        return $this->render('admin/teacher/planning.html.twig', [
+            'teacher' => $teacher,
+            'weekCalendar' => $weekCalendar,
         ]);
     }
 

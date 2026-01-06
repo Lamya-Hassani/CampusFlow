@@ -22,7 +22,7 @@
     <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#3A86FF]/5 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
     <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <div class="max-w-4xl mx-auto w-full z-10">
+    <div class="max-w-7xl mx-auto w-full z-10"> <!-- Increased width to accommodate 3 columns -->
         <!-- Header Section -->
         <div class="mb-8 animate-fade-up">
             <a href="{{ path('admin_student_index') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#3A86FF] transition-colors mb-4 text-xs font-bold uppercase tracking-wide group">
@@ -55,113 +55,124 @@
                 <!-- Decorative Top Border -->
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D97706] via-[#3A86FF] to-[#D97706]"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <!-- Identity Section -->
-                    <div class="col-span-2">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Identité
+                <!-- 3-COLUMN LAYOUT -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 divider-x-slate-100">
+                    
+                    <!-- COLUMN 1: IDENTITÉ (Personal + Address) -->
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Identité & Adresse
                         </h3>
-                    </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Prénom</label>
-                        {{ form_widget(form.firstName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.firstName) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Nom</label>
-                        {{ form_widget(form.lastName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.lastName) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Date de Naissance</label>
-                        {{ form_widget(form.birthDate, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
-                        {{ form_errors(form.birthDate) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">CNE</label>
-                        {{ form_widget(form.cne, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 transition-all p-3.5 text-sm font-mono font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.cne) }}
-                    </div>
-
-                    <!-- Contact Section -->
-                    <div class="col-span-2 mt-4">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Contact & Accès
-                        </h3>
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Email</label>
-                        {{ form_widget(form.email, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
-                        {{ form_errors(form.email) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <div class="flex justify-between items-center mb-2 ml-1">
-                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest">Mot de passe</label>
-                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider bg-slate-50 px-2 py-0.5 rounded">Optionnel</span>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Prénom</label>
+                            {{ form_widget(form.firstName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.firstName) }}
                         </div>
-                        {{ form_widget(form.password, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]', placeholder: 'Laisser vide pour ne pas modifier'}}) }}
-                        {{ form_errors(form.password) }}
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Nom</label>
+                            {{ form_widget(form.lastName, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.lastName) }}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Date de Naissance</label>
+                            {{ form_widget(form.birthDate, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]'}}) }}
+                            {{ form_errors(form.birthDate) }}
+                        </div>
+
+                        <!-- Moved Address Here -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Adresse</label>
+                            {{ form_widget(form.address, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]', rows: 3}}) }}
+                            {{ form_errors(form.address) }}
+                        </div>
                     </div>
 
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Téléphone</label>
-                        {{ form_widget(form.phone, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]'}}) }}
-                        {{ form_errors(form.phone) }}
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Statut</label>
-                        {{ form_widget(form.status, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.status) }}
-                    </div>
-
-                    <!-- Academic Section -->
-                    <div class="col-span-2 mt-4">
-                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                            <span class="w-8 h-[1px] bg-[#D97706]/30"></span> Académique
+                    <!-- COLUMN 2: CONTACT & ACCÈS -->
+                    <div class="space-y-5 lg:border-l lg:border-slate-100 lg:pl-10">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Contact & Accès
                         </h3>
-                    </div>
 
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Classe</label>
-                        {{ form_widget(form.classe, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-bold text-[#0F172A]'}}) }}
-                        {{ form_errors(form.classe) }}
-                    </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Email</label>
+                            {{ form_widget(form.email, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]'}}) }}
+                            {{ form_errors(form.email) }}
+                        </div>
 
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Adresse</label>
-                        {{ form_widget(form.address, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3.5 text-sm font-medium text-[#0F172A]', rows: 2}}) }}
-                        {{ form_errors(form.address) }}
-                    </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Téléphone</label>
+                            {{ form_widget(form.phone, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]'}}) }}
+                            {{ form_errors(form.phone) }}
+                        </div>
 
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Photo de Profil</label>
-                        <div class="mt-1 flex flex-col md:flex-row items-center gap-6 p-6 border-2 border-slate-100 border-dashed rounded-2xl hover:border-[#3A86FF]/30 transition-colors bg-slate-50/30">
-                            {% if student.profilePicture %}
-                                <div class="w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0 animate-scale-in">
-                                    <img src="{{ asset(student.profilePicture) }}" alt="Photo actuelle" class="w-full h-full object-cover">
-                                </div>
-                            {% endif %}
-                            <div class="flex-1 text-center md:text-left space-y-1">
-                                <div class="flex flex-col text-sm text-slate-600">
-                                    {{ form_widget(form.profilePicture, {attr: {class: 'cursor-pointer font-bold text-[#3A86FF] hover:text-blue-500'}}) }}
-                                </div>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PNG, JPG up to 2MB. Leave empty to keep current picture.</p>
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5 ml-1">
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest">Mot de passe</label>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider bg-slate-50 px-2 py-0.5 rounded">Optionnel</span>
                             </div>
+                            {{ form_widget(form.password, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]', placeholder: '••••••••'}}) }}
+                            {{ form_errors(form.password) }}
                         </div>
-                        {{ form_errors(form.profilePicture) }}
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Statut du Compte</label>
+                            {{ form_widget(form.status, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.status) }}
+                        </div>
                     </div>
+
+                    <!-- COLUMN 3: ACADÉMIQUE -->
+                    <div class="space-y-5 lg:border-l lg:border-slate-100 lg:pl-10">
+                        <h3 class="text-[10px] font-black text-[#D97706] uppercase tracking-[0.2em] mb-6 flex items-center gap-3 pb-2 border-b border-slate-100">
+                            Académique
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">CNE (Matricule)</label>
+                            {{ form_widget(form.cne, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 transition-all p-3 text-sm font-mono font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.cne) }}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Classe</label>
+                            {{ form_widget(form.classe, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                            {{ form_errors(form.classe) }}
+                        </div>
+
+                        <!-- Moved Enrollment Date Here -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">Date d'Inscription</label>
+                            {{ form_widget(form.enrollmentDate, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]'}}) }}
+                            {{ form_errors(form.enrollmentDate) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FULL WIDTH: Profile Picture -->
+                <div class="pt-6 mt-6 border-t border-slate-50">
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Photo de Profil</label>
+                    <div class="flex flex-col md:flex-row items-center gap-6 p-6 border-2 border-slate-100 border-dashed rounded-2xl hover:border-[#3A86FF]/30 transition-colors bg-slate-50/30">
+                        {% if student.profilePicture %}
+                            <div class="w-20 h-20 rounded-xl overflow-hidden shadow-md flex-shrink-0 animate-scale-in border border-white">
+                                <img src="{{ asset(student.profilePicture) }}" alt="Photo actuelle" class="w-full h-full object-cover">
+                            </div>
+                        {% endif %}
+                        <div class="flex-1 text-center md:text-left space-y-1">
+                            <div class="flex flex-col text-sm text-slate-600">
+                                {{ form_widget(form.profilePicture, {attr: {class: 'cursor-pointer font-bold text-[#3A86FF] hover:text-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#3A86FF]/10 file:text-[#3A86FF] hover:file:bg-[#3A86FF]/20'}}) }}
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PNG, JPG (Max 2MB)</p>
+                        </div>
+                    </div>
+                    {{ form_errors(form.profilePicture) }}
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="pt-8 flex items-center justify-end gap-4 border-t border-slate-50 mt-4">
-                    <a href="{{ path('admin_student_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm">
+                    <a href="{{ path('admin_student_index') }}" class="px-8 py-3.5 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-50 transition-all text-sm border-2 border-transparent hover:border-slate-100">
                         Annuler
                     </a>
                     <button type="submit" class="bg-[#3A86FF] hover:bg-blue-600 text-white px-10 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center gap-2">

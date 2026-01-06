@@ -5,11 +5,13 @@
 {% block stylesheets %}
 {{ parent() }}
 <style>
+    /* Custom Scrollbar */
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+    /* Animation */
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -18,6 +20,7 @@
         animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     
+    /* Hover Effects */
     .student-row {
         transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
     }
@@ -25,26 +28,33 @@
         transform: scale-[1.002];
         z-index: 10;
         box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+        background-color: #ffffff;
     }
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="h-[calc(100vh-5rem)] bg-slate-50 text-[#0F172A] overflow-hidden relative font-sans flex flex-col p-4 md:p-8">
+<!-- 
+    LAYOUT FIX: 
+    1. h-[calc(100vh-80px)]: Calculates height based on Navbar (~80px)
+    2. flex flex-col: Stacks header and table
+    3. min-h-0: Crucial for allowing the nested scrollable area to work within flexbox
+-->
+<div class="h-[calc(100vh-80px)] bg-slate-50 text-[#0F172A] overflow-hidden relative font-sans flex flex-col p-4 md:p-6">
     
     <!-- Background Decor -->
     <div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-[#3A86FF]/5 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <!-- Header Section -->
-    <div class="flex-none mb-8 animate-fade-up z-10">
+    <!-- 1. Header Section (Fixed Height) -->
+    <div class="flex-none mb-6 animate-fade-up z-10">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-6">
             <div>
                 <span class="text-[#D97706] font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-[#D97706] animate-pulse"></span>
                     Administration
                 </span>
-                <h1 class="text-4xl md:text-5xl font-heading font-black text-[#0F172A] tracking-tight leading-none">
+                <h1 class="text-4xl font-heading font-black text-[#0F172A] tracking-tight leading-none">
                     Gestion des Étudiants
                 </h1>
             </div>
@@ -73,12 +83,17 @@
         </div>
     </div>
 
-    <!-- Table Container -->
-    <div class="flex-1 max-w-7xl mx-auto w-full relative z-10 animate-fade-up" style="animation-delay: 100ms;">
-        <div class="h-full bg-white rounded-[2.5rem] shadow-[0_20px_40px_-10px_rgba(15,23,42,0.05)] border border-slate-100 overflow-hidden flex flex-col">
+    <!-- 2. Table Container (Flex Grow + min-h-0 to force scroll inside) -->
+    <div class="flex-1 min-h-0 max-w-7xl mx-auto w-full relative z-10 animate-fade-up pb-2" style="animation-delay: 100ms;">
+        
+        <!-- The Floating Card -->
+        <div class="h-full bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(15,23,42,0.15)] border border-slate-100 overflow-hidden flex flex-col">
             
-            <div class="overflow-auto custom-scroll flex-1">
+            <!-- Internal Scroll Area -->
+            <div class="flex-1 overflow-auto custom-scroll">
                 <table class="w-full text-left border-collapse">
+                    
+                    <!-- Sticky Header -->
                     <thead class="sticky top-0 z-20">
                         <tr class="bg-slate-50/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
                             <th class="py-5 px-8 text-xs font-black text-slate-400 uppercase tracking-widest">Étudiant</th>
@@ -91,7 +106,7 @@
 
                     <tbody class="divide-y divide-slate-50">
                         {% for student in students %}
-                        <tr class="student-row group">
+                        <tr class="student-row group cursor-default">
                             <td class="py-4 px-8">
                                 <div class="flex items-center gap-4">
                                     <div class="w-11 h-11 rounded-xl bg-[#0F172A] text-white flex items-center justify-center font-heading font-bold text-xs shadow-md group-hover:bg-[#3A86FF] group-hover:scale-110 transition-all duration-300">
@@ -159,8 +174,8 @@
                 </table>
             </div>
 
-            <!-- Table Footer -->
-            <div class="bg-slate-50 border-t border-slate-100 px-8 py-4 flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+            <!-- Table Footer (Sticky at bottom of card) -->
+            <div class="flex-none bg-slate-50 border-t border-slate-100 px-8 py-4 flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                 <span>Total: {{ students|length }} Étudiants</span>
                 <span>CampusFlow Administration</span>
             </div>
@@ -168,4 +183,3 @@
     </div>
 </div>
 {% endblock %}
-

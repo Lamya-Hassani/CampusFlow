@@ -126,7 +126,7 @@
                                         {% set isCM = (schedule.courseType == 'CM' or schedule.courseType == 'Cours') %}
                                         {% set isTP = (schedule.courseType == 'TP') %}
                                         
-                                        {% set typeColor = isCM ? '#F59E0B' : (isTP ? '#3A86FF' : '#10B981') %}
+                                        {% set typeColor = isCM ? '#D97706' : (isTP ? '#3A86FF' : '#10B981') %}
                                         {% set bgColor = isCM ? 'bg-amber-50' : (isTP ? 'bg-blue-50' : 'bg-emerald-50') %}
                                         
                                         <div class="group relative bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer overflow-hidden {{ bgColor }}"
@@ -224,9 +224,8 @@
         </div>
         
         <!-- Form -->
-        <form id="scheduleForm" method="POST" action="" class="p-8">
-            <div id="formContent">
-                {{ form_start(schedule_form) }}
+        <div id="scheduleFormContent" class="p-8">
+            {{ form_start(schedule_form, {'attr': {'id': 'scheduleForm'}}) }}
                 <div class="grid grid-cols-2 gap-6">
                     <!-- Full Width Inputs -->
                     <div class="col-span-2">
@@ -266,32 +265,30 @@
                         {{ form_widget(schedule_form.semester, {attr: {class: 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 text-sm focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all'}}) }}
                     </div>
                     
-                    <div class="hidden">{{ form_row(schedule_form.classe) }}</div>
                 </div>
                 {{ form_rest(schedule_form) }}
-                {{ form_end(schedule_form) }}
-            </div>
             
-            <!-- Footer Actions (Side by Side) -->
-            <div class="grid grid-cols-2 gap-4 pt-6 mt-6 border-t border-slate-100">
-                <!-- Left: Delete Button -->
-                <div class="flex items-center">
-                    <button type="button" id="deleteBtn" onclick="confirmDelete()" class="hidden text-rose-500 hover:text-white hover:bg-rose-500 px-6 py-3 rounded-xl transition-all text-sm font-bold flex items-center justify-center gap-2 border-2 border-rose-200 hover:border-rose-500 w-full">
-                        <i class="fa-regular fa-trash-can"></i> Supprimer
-                    </button>
-                </div>
+                <!-- Footer Actions (Side by Side) -->
+                <div class="grid grid-cols-2 gap-4 pt-6 mt-6 border-t border-slate-100">
+                    <!-- Left: Delete Button -->
+                    <div class="flex items-center">
+                        <button type="button" id="deleteBtn" onclick="confirmDelete()" class="hidden text-rose-500 hover:text-white hover:bg-rose-500 px-6 py-3 rounded-xl transition-all text-sm font-bold flex items-center justify-center gap-2 border-2 border-rose-200 hover:border-rose-500 w-full">
+                            <i class="fa-regular fa-trash-can"></i> Supprimer
+                        </button>
+                    </div>
 
-                <!-- Right: Cancel & Save Buttons -->
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="closeModal()" class="flex-1 px-5 py-3 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-100 transition-all text-sm border-2 border-slate-200">
-                        Annuler
-                    </button>
-                    <button type="submit" id="saveBtn" class="flex-1 bg-[#3A86FF] hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-check"></i> Enregistrer
-                    </button>
+                    <!-- Right: Cancel & Save Buttons -->
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="closeModal()" class="flex-1 px-5 py-3 rounded-xl text-slate-500 font-bold hover:text-[#0F172A] hover:bg-slate-100 transition-all text-sm border-2 border-slate-200">
+                            Annuler
+                        </button>
+                        <button type="submit" id="saveBtn" class="flex-1 bg-[#3A86FF] hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check"></i> Enregistrer
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            {{ form_end(schedule_form) }}
+        </div>
     </div>
 </div>
 
@@ -299,73 +296,75 @@
 <input type="hidden" name="_token_delete_template" value="{{ csrf_token('delete' ~ 'ID_PLACEHOLDER') }}" class="hidden">
 
 <script>
-    const modal = document.getElementById('scheduleModal');
-    const modalCard = document.getElementById('modalCard');
-    const form = document.querySelector('#scheduleModal form');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const modalTitle = document.getElementById('modalTitle');
+    window.pageInit = () => {
+        const modal = document.getElementById('scheduleModal');
+        const modalCard = document.getElementById('modalCard');
+        const form = document.getElementById('scheduleForm'); // Target the Symfony form by ID
+        const deleteBtn = document.getElementById('deleteBtn');
+        const modalTitle = document.getElementById('modalTitle');
 
-    document.getElementById('classSearch')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll('.class-item').forEach(item => {
-            item.style.display = item.dataset.name.toLowerCase().includes(term) ? 'flex' : 'none';
+        document.getElementById('classSearch')?.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.class-item').forEach(item => {
+                item.style.display = item.dataset.name.toLowerCase().includes(term) ? 'flex' : 'none';
+            });
         });
-    });
 
-    function openNewModal() {
-        modalTitle.innerText = "Nouveau Créneau";
-        form.action = "{{ path('admin_schedule_new') }}";
-        form.reset();
-        {% if selectedClass %}
-            const classSelect = form.querySelector('[name*="[classe]"]');
-            if (classSelect) classSelect.value = "{{ selectedClass.id }}";
-        {% endif %}
-        deleteBtn.classList.add('hidden');
-        modal.classList.remove('hidden');
-        setTimeout(() => modalCard.classList.remove('scale-95'), 10);
-    }
+        window.openNewModal = () => {
+            modalTitle.innerText = "Nouveau Créneau";
+            form.action = "{{ path('admin_schedule_new') }}";
+            form.reset();
+            {% if selectedClass %}
+                const classSelect = form.querySelector('[name*="[classe]"]');
+                if (classSelect) classSelect.value = "{{ selectedClass.id }}";
+            {% endif %}
+            deleteBtn.classList.add('hidden');
+            modal.classList.remove('hidden');
+            setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+        }
 
-    function openEditModal(data) {
-        modalTitle.innerText = "Modifier le Créneau";
-        form.action = `/admin/schedule/${data.id}/edit`;
-        populateField('subject', data.subject);
-        populateField('teacher', data.teacher);
-        populateField('dayOfWeek', data.day);
-        populateField('courseType', data.type);
-        populateField('startTime', data.start);
-        populateField('endTime', data.end);
-        populateField('room', data.room);
-        populateField('classe', data.classe);
-        populateField('semester', data.semester);
-        deleteBtn.classList.remove('hidden');
-        deleteBtn.dataset.id = data.id;
-        modal.classList.remove('hidden');
-        setTimeout(() => modalCard.classList.remove('scale-95'), 10);
-    }
+        window.openEditModal = (data) => {
+            modalTitle.innerText = "Modifier le Créneau";
+            form.action = `/admin/schedule/${data.id}/edit`;
+            populateField('subject', data.subject);
+            populateField('teacher', data.teacher);
+            populateField('dayOfWeek', data.day);
+            populateField('courseType', data.type);
+            populateField('startTime', data.start);
+            populateField('endTime', data.end);
+            populateField('room', data.room);
+            populateField('classe', data.classe);
+            populateField('semester', data.semester);
+            deleteBtn.classList.remove('hidden');
+            deleteBtn.dataset.id = data.id;
+            modal.classList.remove('hidden');
+            setTimeout(() => modalCard.classList.remove('scale-95'), 10);
+        }
 
-    function populateField(name, value) {
-        const field = form.querySelector(`[name*="[${name}]"]`);
-        if (field) field.value = value;
-    }
+        function populateField(name, value) {
+            const field = form.querySelector(`[name*="[${name}]"]`);
+            if (field) field.value = value;
+        }
 
-    function closeModal() {
-        modalCard.classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 200);
-    }
+        window.closeModal = () => {
+            modalCard.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
 
-    function confirmDelete() {
-        if (confirm('Supprimer ce créneau ?')) {
-            const id = deleteBtn.dataset.id;
-            const realDeleteForm = document.createElement('form');
-            realDeleteForm.method = 'POST';
-            realDeleteForm.action = `/admin/schedule/${id}`;
-            const tokenInput = document.createElement('input');
-            tokenInput.type = 'hidden';
-            tokenInput.name = '_token';
-            tokenInput.value = document.querySelector('input[name="_token_delete_template"]').value.replace('ID_PLACEHOLDER', id);
-            realDeleteForm.appendChild(tokenInput);
-            document.body.appendChild(realDeleteForm);
-            realDeleteForm.submit();
+        window.confirmDelete = () => {
+            if (confirm('Supprimer ce créneau ?')) {
+                const id = deleteBtn.dataset.id;
+                const realDeleteForm = document.createElement('form');
+                realDeleteForm.method = 'POST';
+                realDeleteForm.action = `/admin/schedule/${id}`;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_token';
+                tokenInput.value = document.querySelector('input[name="_token_delete_template"]').value.replace('ID_PLACEHOLDER', id);
+                realDeleteForm.appendChild(tokenInput);
+                document.body.appendChild(realDeleteForm);
+                realDeleteForm.submit();
+            }
         }
     }
 </script>

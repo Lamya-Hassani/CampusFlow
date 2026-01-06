@@ -1,130 +1,184 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Bulletin de Notes - {{ student.fullName }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    /* Specific print styles to ensure the PDF looks right if printed directly from browser */
+    @media print {
+        body * { visibility: hidden; }
+        #print-area, #print-area * { visibility: visible; }
+        #print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; box-shadow: none; }
+        .no-print { display: none !important; }
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="max-w-4xl mx-auto">
-    <!-- Toolbar -->
-    <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-        <h2 class="font-bold text-slate-700">Aperçu du Bulletin (Semestre {{ semester }})</h2>
-        <div>
-            <a href="{{ path('admin_student_show', {'id': student.id}) }}" class="text-slate-500 font-bold mr-4 hover:text-slate-700">Retour</a>
-            <a href="{{ path('admin_student_bulletin_pdf', {'id': student.id, 'semester': semester}) }}" 
-               onclick="return confirm('Confirmer le téléchargement du PDF officiel ?')"
-               class="bg-campus-yellow text-slate-900 px-6 py-2 rounded-full font-bold shadow-md hover:bg-yellow-300 transition-colors">
-               <i class="fa-solid fa-download mr-2"></i> Télécharger PDF
-            </a>
-        </div>
-    </div>
+<div class="min-h-[calc(100vh-5rem)] bg-slate-50 text-[#0F172A] relative font-sans flex flex-col p-4 md:p-8 overflow-y-auto">
+    
+    <!-- Background Decor -->
+    <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#0F172A]/5 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D97706]/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <!-- THE PAPER (Simulates A4) -->
-    <div class="bg-white p-[1cm] shadow-2xl mx-auto text-black" style="min-height: 29.7cm; width: 21cm; font-family: 'Times New Roman', serif;">
+    <div class="max-w-[23cm] mx-auto w-full z-10">
         
-        <!-- Header -->
-        <div class="text-center mb-8 border-b-2 border-black pb-4">
-            <h3 class="uppercase font-bold text-sm tracking-widest mb-1">Royaume du Maroc</h3>
-            <h4 class="uppercase font-bold text-xs">Ministère de l'Éducation Nationale</h4>
-            <div class="flex justify-between items-end mt-6">
-                <div class="text-left text-sm">
-                    <p><strong>Établissement :</strong> CampusFlow Academy</p>
-                    <p><strong>Année Scolaire :</strong> {{ student.classe.academicYear }}</p>
-                </div>
-                <div class="text-right text-sm">
-                    <p><strong>Ville :</strong> Casablanca</p>
-                </div>
-            </div>
-        </div>
+        <!-- Header Section (Toolbar) -->
+        <div class="mb-8 animate-fade-up no-print">
+            <a href="{{ path('admin_student_show', {'id': student.id}) }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-[#D97706] transition-colors mb-4 text-xs font-bold uppercase tracking-wide group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour au profil
+            </a>
 
-        <!-- Student Info Box -->
-        <div class="border border-black p-4 mb-6 flex justify-between bg-gray-50">
-            <div>
-                <p class="mb-1"><strong>Nom & Prénom :</strong> {{ student.lastName|upper }} {{ student.firstName }}</p>
-                <p class="mb-1"><strong>N° CNE :</strong> {{ student.cne }}</p>
-                <p><strong>Date de Naissance :</strong> {{ student.birthDate|date('d/m/Y') }}</p>
-            </div>
-            <div class="text-right">
-                <p class="mb-1"><strong>Classe :</strong> {{ student.classe.name }}</p>
-                <p><strong>Niveau :</strong> {{ student.classe.level }}</p>
-                <p><strong>Semestre :</strong> {{ semester }}</p>
-            </div>
-        </div>
-
-        <!-- Grades Table -->
-        <table class="w-full border-collapse border border-black text-sm mb-6">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border border-black p-2 text-left w-1/3">Matière</th>
-                    <th class="border border-black p-2 text-center w-16">Coef.</th>
-                    <th class="border border-black p-2 text-center w-16">Note /20</th>
-                    <th class="border border-black p-2 text-center w-16">Produit</th>
-                    <th class="border border-black p-2 text-left">Appréciations / Observations</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% set totalCoef = 0 %}
-                {% set totalPoints = 0 %}
-                
-                {% for item in gradesData %}
-                    {% set produit = item.grade.value * item.subject.coefficient %}
-                    {% set totalCoef = totalCoef + item.subject.coefficient %}
-                    {% set totalPoints = totalPoints + produit %}
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+                <div class="flex items-center gap-6">
+                    <!-- Icon Box -->
+                    <div class="w-16 h-16 rounded-2xl bg-[#0F172A] text-white flex items-center justify-center shadow-lg border-2 border-white/50">
+                        <i class="fa-solid fa-file-invoice text-xl text-[#D97706]"></i>
+                    </div>
                     
-                    <tr>
-                        <td class="border border-black p-2 font-bold">{{ item.subject.name }}</td>
-                        <td class="border border-black p-2 text-center">{{ item.subject.coefficient }}</td>
-                        <td class="border border-black p-2 text-center font-mono 
-                            {% if item.grade.value < 10 %}text-red-600{% endif %}">
-                            {{ item.grade.value|number_format(2, ',', ' ') }}
-                        </td>
-                        <td class="border border-black p-2 text-center font-mono">{{ produit|number_format(2, ',', ' ') }}</td>
-                        <td class="border border-black p-2 text-xs italic text-gray-600">
-                            {% if item.grade.value >= 16 %}Très Bien
-                            {% elseif item.grade.value >= 14 %}Bien
-                            {% elseif item.grade.value >= 12 %}Assez Bien
-                            {% elseif item.grade.value >= 10 %}Passable
-                            {% else %}Insuffisant{% endif %}
+                    <div>
+                        <h1 class="text-3xl font-heading font-black text-[#0F172A] tracking-tight leading-none mb-1">
+                            Aperçu du Bulletin
+                        </h1>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">
+                            {{ student.fullName }} <span class="text-slate-300 mx-2">|</span> Semestre {{ semester }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <a href="{{ path('admin_student_bulletin_pdf', {'id': student.id, 'semester': semester}) }}" 
+                   onclick="return confirm('Confirmer le téléchargement du PDF officiel ?')"
+                   class="bg-[#D97706] hover:bg-amber-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-amber-500/20 transition-all hover:-translate-y-0.5 text-sm flex items-center gap-3">
+                   <i class="fa-solid fa-cloud-arrow-down"></i>
+                   Télécharger le PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- THE PAPER (Simulates A4) -->
+        <div id="print-area" class="animate-fade-up bg-white p-[1cm] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] mx-auto text-black relative" style="animation-delay: 100ms; min-height: 29.7cm; width: 21cm; font-family: 'Times New Roman', serif;">
+            
+            <!-- Decorative Border Top (Optional, serves as letterhead accent) -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-black/80"></div>
+
+            <!-- Header -->
+            <div class="text-center mb-10 pb-4 relative">
+                <h3 class="uppercase font-bold text-sm tracking-[0.2em] mb-1">Royaume du Maroc</h3>
+                <h4 class="uppercase font-bold text-xs tracking-widest text-gray-600">Ministère de l'Éducation Nationale</h4>
+                <div class="w-16 h-0.5 bg-black mx-auto my-3"></div>
+                
+                <div class="flex justify-between items-end mt-8 text-sm font-medium">
+                    <div class="text-left">
+                        <p class="mb-1"><span class="font-bold uppercase text-xs tracking-wide">Établissement :</span> <br>CampusFlow Academy</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="mb-1"><span class="font-bold uppercase text-xs tracking-wide">Ville :</span> <br>Casablanca</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Info Box -->
+            <div class="border-2 border-black p-6 mb-8 flex justify-between bg-gray-50/50">
+                <div class="space-y-2">
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">Nom & Prénom</strong> <span class="text-lg">{{ student.lastName|upper }} {{ student.firstName }}</span></p>
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">N° CNE</strong> <span class="font-mono">{{ student.cne }}</span></p>
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">Date de Naissance</strong> {{ student.birthDate|date('d/m/Y') }}</p>
+                </div>
+                <div class="text-right space-y-2">
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">Année Scolaire</strong> {{ student.classe.academicYear }}</p>
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">Classe & Niveau</strong> {{ student.classe.name }} ({{ student.classe.level }})</p>
+                    <p class="text-sm"><strong class="uppercase text-xs tracking-wide block text-gray-500">Semestre</strong> {{ semester }}</p>
+                </div>
+            </div>
+
+            <!-- Grades Table -->
+            <table class="w-full border-collapse border border-black text-sm mb-8">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border border-black p-3 text-left w-1/3 uppercase text-xs tracking-wider">Matière</th>
+                        <th class="border border-black p-3 text-center w-16 uppercase text-xs tracking-wider">Coef.</th>
+                        <th class="border border-black p-3 text-center w-20 uppercase text-xs tracking-wider">Note /20</th>
+                        <th class="border border-black p-3 text-center w-20 uppercase text-xs tracking-wider">Produit</th>
+                        <th class="border border-black p-3 text-left uppercase text-xs tracking-wider">Appréciations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set totalCoef = 0 %}
+                    {% set totalPoints = 0 %}
+                    
+                    {% for grade in grades %}
+                        {% set produit = grade.value * grade.subject.coefficient %}
+                        {% set totalCoef = totalCoef + grade.subject.coefficient %}
+                        {% set totalPoints = totalPoints + produit %}
+                        
+                        <tr>
+                            <td class="border border-black p-3 font-bold">{{ grade.subject.name }}</td>
+                            <td class="border border-black p-3 text-center text-gray-600">{{ grade.subject.coefficient }}</td>
+                            <td class="border border-black p-3 text-center font-mono font-bold
+                                {% if grade.value < 10 %}text-red-700{% endif %}">
+                                {{ grade.value|number_format(2, ',', ' ') }}
+                            </td>
+                            <td class="border border-black p-3 text-center font-mono text-gray-600">{{ produit|number_format(2, ',', ' ') }}</td>
+                            <td class="border border-black p-3 text-xs italic text-gray-500">
+                                {% if grade.value >= 16 %}Très Bien
+                                {% elseif grade.value >= 14 %}Bien
+                                {% elseif grade.value >= 12 %}Assez Bien
+                                {% elseif grade.value >= 10 %}Passable
+                                {% else %}Insuffisant{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 font-bold">
+                        <td class="border border-black p-3 text-right uppercase text-xs tracking-widest">Total</td>
+                        <td class="border border-black p-3 text-center">{{ totalCoef }}</td>
+                        <td class="border border-black p-3 bg-gray-200 diagonal-strike"></td>
+                        <td class="border border-black p-3 text-center">{{ totalPoints|number_format(2, ',', ' ') }}</td>
+                        <td class="border border-black p-3"></td>
+                    </tr>
+                    <tr class="bg-slate-100">
+                        <td colspan="3" class="border border-black p-4 text-right uppercase font-black text-sm tracking-widest">Moyenne Générale</td>
+                        <td colspan="2" class="border border-black p-4 text-center font-black text-xl">
+                            {{ (totalPoints / (totalCoef ?: 1))|number_format(2, ',', ' ') }} <span class="text-sm font-normal text-gray-500">/ 20</span>
                         </td>
                     </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr class="bg-gray-100 font-bold">
-                    <td class="border border-black p-2 text-right uppercase">Total</td>
-                    <td class="border border-black p-2 text-center">{{ totalCoef }}</td>
-                    <td class="border border-black p-2 bg-gray-300"></td>
-                    <td class="border border-black p-2 text-center">{{ totalPoints|number_format(2, ',', ' ') }}</td>
-                    <td class="border border-black p-2"></td>
-                </tr>
-                <tr class="bg-blue-50">
-                    <td colspan="3" class="border border-black p-3 text-right uppercase font-bold text-lg">Moyenne Générale</td>
-                    <td colspan="2" class="border border-black p-3 text-center font-bold text-xl text-blue-900">
-                        {{ (totalPoints / (totalCoef ?: 1))|number_format(2, ',', ' ') }} / 20
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
 
-        <!-- Signatures Area -->
-        <div class="grid grid-cols-3 gap-4 mt-12 h-40">
-            <div class="border border-black p-2 h-full relative">
-                <p class="text-xs font-bold underline mb-2">Décision du Conseil :</p>
-                <div class="absolute bottom-2 left-2 text-xs italic">
-                    {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}
-                        Admis(e)
-                    {% else %}
-                        Non Admis(e)
-                    {% endif %}
+            <!-- Signatures Area -->
+            <div class="grid grid-cols-3 gap-6 mt-16 h-48">
+                <div class="border border-black p-4 h-full relative flex flex-col">
+                    <p class="text-xs font-bold uppercase underline decoration-2 decoration-black mb-2">Décision du Conseil</p>
+                    <div class="flex-1 flex items-center justify-center">
+                        {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}
+                            <span class="font-bold text-lg uppercase border-2 border-black px-4 py-1 rotate-[-10deg]">Admis(e)</span>
+                        {% else %}
+                            <span class="font-bold text-lg uppercase border-2 border-black px-4 py-1 rotate-[-10deg]">Non Admis(e)</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="border border-black p-4 h-full">
+                    <p class="text-xs font-bold uppercase underline decoration-2 decoration-black mb-2">Visa des Parents</p>
+                </div>
+                <div class="border border-black p-4 h-full text-center relative">
+                    <p class="text-xs font-bold uppercase underline decoration-2 decoration-black mb-10">Le Directeur</p>
+                    <p class="text-[10px] text-gray-400 italic absolute bottom-4 w-full left-0">Cachet et Signature</p>
                 </div>
             </div>
-            <div class="border border-black p-2 h-full">
-                <p class="text-xs font-bold underline mb-2">Visa des Parents :</p>
-            </div>
-            <div class="border border-black p-2 h-full text-center">
-                <p class="text-xs font-bold underline mb-8">Le Directeur :</p>
-                <p class="text-xs text-gray-400 italic">(Cachet et Signature)</p>
-            </div>
-        </div>
 
-        <div class="mt-8 text-center text-xs text-gray-500">
-            Fait à Casablanca, le {{ "now"|date("d/m/Y") }}
+            <div class="mt-12 text-center text-xs text-gray-400 font-italic">
+                Ce document est généré automatiquement par le système CampusFlow le {{ "now"|date("d/m/Y") }}
+            </div>
         </div>
     </div>
 </div>

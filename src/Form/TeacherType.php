@@ -59,9 +59,10 @@ class TeacherType extends AbstractType
                 'class' => Subject::class,
                 'choice_label' => 'name',
                 'multiple' => true,
-                'expanded' => false,
+                'expanded' => true,
+                'by_reference' => false,
                 'label' => 'Matières enseignées',
-                'attr' => ['class' => 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500']
+                'attr' => ['class' => 'mt-1 block w-full space-y-2 max-h-48 overflow-y-auto p-4 bg-slate-50 rounded-xl border-2 border-slate-100']
             ])
             ->add('profilePicture', FileType::class, [
                 'label' => 'Photo de profil',

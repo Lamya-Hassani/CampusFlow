@@ -186,8 +186,8 @@
 </div>
 
 <script>
-    // Simple Entrance Animation
-    document.addEventListener('DOMContentLoaded', () => {
+    window.pageInit = () => {
+        // Simple Entrance Animation
         const elements = document.querySelectorAll('.group, h1, h3, .bg-white');
         elements.forEach((el, index) => {
             el.style.opacity = '0';
@@ -199,6 +199,6 @@
                 el.style.transform = 'translateY(0)';
             }, index * 30);
         });
-    });
+    };
 </script>
 {% endblock %}

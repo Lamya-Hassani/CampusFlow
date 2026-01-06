@@ -4,46 +4,54 @@
     <meta charset="UTF-8">
     <title>Bulletin - {{ student.fullName }}</title>
     <style>
-        @page { margin: 0.5cm; }
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #000; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 10px; }
-        .school-info { width: 100%; margin-bottom: 10px; }
-        .student-box { border: 1px solid #000; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; width: 100%; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
-        th { background-color: #eee; text-align: center; font-weight: bold; }
+        @page { margin: 1cm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; color: #000; line-height: 1.4; }
+        .header-table { width: 100%; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .student-box-table { width: 100%; border: 1px solid #000; padding: 12px; margin-bottom: 20px; background-color: #f8fafc; }
+        table.grades-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        table.grades-table th, table.grades-table td { border: 1px solid #000; padding: 8px; text-align: left; }
+        table.grades-table th { background-color: #f1f5f9; text-align: center; font-weight: bold; text-transform: uppercase; font-size: 9px; }
         .center { text-align: center; }
         .right { text-align: right; }
-        .footer-box { width: 32%; display: inline-block; height: 120px; border: 1px solid #000; vertical-align: top; padding: 5px; margin-right: 1%; }
-        .avg-row { background-color: #e6f3ff; font-weight: bold; font-size: 14px; }
+        .avg-row { background-color: #eff6ff; font-weight: bold; font-size: 13px; }
+        .bold { font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h3 style="margin:0; text-transform:uppercase;">Royaume du Maroc</h3>
-        <h5 style="margin:5px 0;">Ministère de l'Éducation Nationale</h5>
-        <div style="margin-top:15px; text-align:left;">
-            <strong>Établissement:</strong> CampusFlow Academy &nbsp;&nbsp;|&nbsp;&nbsp; 
-            <strong>Année:</strong> {{ student.classe.academicYear }}
-        </div>
-    </div>
-
-    <table class="student-box">
+    <table class="header-table">
         <tr>
-            <td style="border:none;">
-                <strong>Nom & Prénom:</strong> {{ student.lastName|upper }} {{ student.firstName }}<br>
-                <strong>CNE:</strong> {{ student.cne }}<br>
-                <strong>Né(e) le:</strong> {{ student.birthDate|date('d/m/Y') }}
+            <td colspan="2" style="text-align: center;">
+                <h3 style="margin:0; text-transform:uppercase; font-size: 14px; letter-spacing: 2px;">Royaume du Maroc</h3>
+                <h4 style="margin:5px 0; text-transform:uppercase; font-size: 11px;">Ministère de l'Éducation Nationale</h4>
             </td>
-            <td style="border:none; text-align:right;">
-                <strong>Classe:</strong> {{ student.classe.name }}<br>
-                <strong>Niveau:</strong> {{ student.classe.level }}<br>
-                <strong>Semestre:</strong> {{ semester }}
+        </tr>
+        <tr>
+            <td style="padding-top: 20px; font-size: 10px;">
+                <strong>Établissement :</strong> CampusFlow Academy<br>
+                <strong>Année Scolaire :</strong> {{ student.classe.academicYear }}
+            </td>
+            <td style="padding-top: 20px; text-align: right; font-size: 10px; vertical-align: bottom;">
+                <strong>Ville :</strong> Casablanca
             </td>
         </tr>
     </table>
 
-    <table>
+    <table class="student-box-table">
+        <tr>
+            <td style="width: 50%;">
+                <p style="margin: 0 0 5px 0;"><strong>Nom & Prénom :</strong> {{ student.lastName|upper }} {{ student.firstName }}</p>
+                <p style="margin: 0 0 5px 0;"><strong>N° CNE :</strong> {{ student.cne }}</p>
+                <p style="margin: 0;"><strong>Date de Naissance :</strong> {{ student.birthDate|date('d/m/Y') }}</p>
+            </td>
+            <td style="width: 50%; text-align: right; vertical-align: top;">
+                <p style="margin: 0 0 5px 0;"><strong>Classe :</strong> {{ student.classe.name }}</p>
+                <p style="margin: 0 0 5px 0;"><strong>Niveau :</strong> {{ student.classe.level }}</p>
+                <p style="margin: 0;"><strong>Semestre :</strong> {{ semester }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="grades-table">
         <thead>
             <tr>
                 <th width="35%">Matière</th>
@@ -56,17 +64,17 @@
         <tbody>
             {% set totalCoef = 0 %}
             {% set totalPoints = 0 %}
-            {% for item in gradesData %}
-                {% set produit = item.grade.value * item.subject.coefficient %}
-                {% set totalCoef = totalCoef + item.subject.coefficient %}
+            {% for grade in grades %}
+                {% set produit = grade.value * grade.subject.coefficient %}
+                {% set totalCoef = totalCoef + grade.subject.coefficient %}
                 {% set totalPoints = totalPoints + produit %}
                 <tr>
-                    <td>{{ item.subject.name }}</td>
-                    <td class="center">{{ item.subject.coefficient }}</td>
-                    <td class="center">{{ item.grade.value|number_format(2, ',', ' ') }}</td>
+                    <td>{{ grade.subject.name }}</td>
+                    <td class="center">{{ grade.subject.coefficient }}</td>
+                    <td class="center">{{ grade.value|number_format(2, ',', ' ') }}</td>
                     <td class="center">{{ produit|number_format(2, ',', ' ') }}</td>
                     <td style="font-style:italic; font-size:10px;">
-                        {% if item.grade.value >= 14 %}Bien{% elseif item.grade.value >= 10 %}Passable{% else %}Faible{% endif %}
+                        {% if grade.value >= 14 %}Bien{% elseif grade.value >= 10 %}Passable{% else %}Faible{% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -86,17 +94,34 @@
         </tfoot>
     </table>
 
-    <div style="margin-top: 30px;">
-        <div class="footer-box">
-            <strong>Décision du conseil:</strong><br><br>
-            {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}Admis{% else %}Redouble{% endif %}
-        </div>
-        <div class="footer-box">
-            <strong>Visa du Tuteur:</strong>
-        </div>
-        <div class="footer-box">
-            <strong>Le Directeur:</strong>
-        </div>
+    <table style="width: 100%; margin-top: 30px; border-collapse: collapse;">
+        <tr>
+            <td style="width: 32%; border: 1px solid #000; height: 120px; vertical-align: top; padding: 8px; position: relative;">
+                <strong style="text-decoration: underline; font-size: 10px;">Décision du Conseil :</strong><br><br>
+                <div style="position: absolute; bottom: 8px; left: 8px; font-style: italic; font-size: 11px;">
+                    {% if (totalPoints / (totalCoef ?: 1)) >= 10 %}
+                        Admis(e)
+                    {% else %}
+                        Non Admis(e)
+                    {% endif %}
+                </div>
+            </td>
+            <td style="width: 2%; border: none;"></td>
+            <td style="width: 32%; border: 1px solid #000; height: 120px; vertical-align: top; padding: 8px;">
+                <strong style="text-decoration: underline; font-size: 10px;">Visa des Parents :</strong>
+            </td>
+            <td style="width: 2%; border: none;"></td>
+            <td style="width: 32%; border: 1px solid #000; height: 120px; vertical-align: top; padding: 8px; text-align: center;">
+                <strong style="text-decoration: underline; font-size: 10px;">Le Directeur :</strong><br><br>
+                <div style="font-size: 10px; color: #666; font-style: italic; margin-top: 50px;">
+                    (Cachet et Signature)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #666;">
+        Fait à Casablanca, le {{ "now"|date("d/m/Y") }}
     </div>
 </body>
 </html>

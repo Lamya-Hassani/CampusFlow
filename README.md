@@ -31,7 +31,7 @@ Application web de gestion académique complète destinée aux établissements d
 ### 1. Cloner le projet
 
 ```bash
-cd C:\xampp\htdocs\CampusFlow_version2
+cd C:\xampp\htdocs\CampusFlow_version
 ```
 
 ### 2. Installer les dépendances
@@ -84,16 +84,16 @@ Ou utilisez le serveur XAMPP en pointant vers le dossier `public/`.
 Après avoir chargé les fixtures, vous pouvez vous connecter avec :
 
 ### Administrateur
-- **Email** : `admin@campusflow.com`
-- **Mot de passe** : `admin123`
+- **Email** : `admin.campusflow@campusflow.com`
+- **Mot de passe** : `azsq`
 
 ### Enseignant
-- **Email** : `ahmed.benali@campusflow.com`
-- **Mot de passe** : `teacher123`
+- **Email** : `yassine.elamrani@campusflow.com`
+- **Mot de passe** : `azsq`
 
 ### Étudiant
-- **Email** : `student1@campusflow.com`
-- **Mot de passe** : `student123`
+- **Email** : `imad.amrani@campusflow.com`
+- **Mot de passe** : `azsq`
 
 ## 📁 Structure du projet
 
@@ -169,5 +169,5 @@ Pour contribuer au projet :
 
 ---
 
-**CampusFlow Version 2** - Système de gestion académique moderne et intuitif 🎓
+**CampusFlow** - Système de gestion académique moderne et intuitif 🎓
 

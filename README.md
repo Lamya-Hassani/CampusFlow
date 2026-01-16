@@ -31,7 +31,7 @@ Application web de gestion académique complète destinée aux établissements d
 ### 1. Cloner le projet
 
 ```bash
-cd C:\xampp\htdocs\CampusFlow_version
+cd C:\xampp\htdocs\CampusFlow
 ```
 
 ### 2. Installer les dépendances

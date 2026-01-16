@@ -1,4 +1,4 @@
-# CampusFlow Version 2
+# CampusFlow
 
 Application web de gestion académique complète destinée aux établissements d'enseignement supérieur.
 

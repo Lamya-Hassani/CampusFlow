@@ -52,6 +52,7 @@ class StudentController extends AbstractController
 
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student, ['is_new' => true]);
+        // handleRequest is a method that processes the form data from the request.
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -61,6 +62,7 @@ class StudentController extends AbstractController
             $user->setRoles(['ROLE_STUDENT']);
             $user->setCreatedAt(new \DateTimeImmutable());
 
+            //persist is a methode that add the data   
             $this->em->persist($user);
             $student->setUser($user);
             $student->setEnrollmentDate(new \DateTimeImmutable());
@@ -257,7 +259,7 @@ class StudentController extends AbstractController
         ]);
 
         $options = new Options();
-        $options->set('defaultFont', 'DejaVuSans'); // Support accents
+        $options->set('defaultFont', 'DejaVuSans');
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
 

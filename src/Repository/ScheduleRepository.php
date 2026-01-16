@@ -39,6 +39,7 @@ class ScheduleRepository extends ServiceEntityRepository
         string $dayOfWeek,
         \DateTimeInterface $startTime,
         \DateTimeInterface $endTime,
+        // ?object is a nullable object
         ?object $teacher,
         ?object $classe,
         string $room,

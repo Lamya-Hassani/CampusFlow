@@ -3,7 +3,7 @@
 {% block title %}Nouveau Créneau - CampusFlow{% endblock %}
 
 {% block body %}
-<div class="max-w-xl mx-auto py-12 px-4">
+<div class="max-w-xl mx-auto py-12 px-4 animate-fade-in-up">
     
     <!-- Header -->
     <div class="mb-8 flex items-center gap-4">
@@ -18,20 +18,20 @@
 
     <!-- Form Card -->
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
-        {{ form_start(form, {attr: {class: 'px-8 pt-8 pb-10'}}) }}
+        {{ form_start(form, {attr: {class: 'px-8 pt-8 pb-10', 'data-turbo': 'false'}}) }}
             <div class="grid grid-cols-2 gap-x-6 gap-y-5">
                 
-                <!-- Full Width Inputs -->
                 <div class="col-span-2">
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Matière</label>
                     {{ form_widget(form.subject, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-bold text-[#0F172A]'}}) }}
+                    {{ form_errors(form.subject) }}
                 </div>
                 <div class="col-span-2">
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Enseignant</label>
                     {{ form_widget(form.teacher, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-[#3A86FF] focus:ring-4 focus:ring-[#3A86FF]/10 transition-all p-3 text-sm font-medium text-[#0F172A]'}}) }}
+                    {{ form_errors(form.teacher) }}
                 </div>
                 
-                <!-- Grid Inputs -->
                 <div class="col-span-1">
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Jour</label>
                     {{ form_widget(form.dayOfWeek, {attr: {class: 'w-full rounded-xl border-2 border-slate-100 bg-slate-50 p-3 text-sm focus:border-[#D97706] focus:ring-4 focus:ring-[#D97706]/10 focus:bg-white transition-all'}}) }}

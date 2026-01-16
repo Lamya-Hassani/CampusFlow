@@ -122,14 +122,35 @@
                                 <div class="space-y-2 h-full rounded-xl p-1 transition-colors hover:bg-slate-50">
                                     {% for schedule in weekCalendar[dayEnglish] %}
                                         
-                                        {# COLOR LOGIC #}
-                                        {% set isCM = (schedule.courseType == 'CM' or schedule.courseType == 'Cours') %}
-                                        {% set isTP = (schedule.courseType == 'TP') %}
+                                        {# COLOR LOGIC: Subject-based colors #}
+                                        {% set subjectColors = {
+                                            'Analyse 1': '#3A86FF',
+                                            'Algèbre 1': '#4361EE',
+                                            'Maths discrètes': '#4895EF',
+                                            'Probabilités': '#4CC9F0',
+                                            'Programmation 1': '#10B981',
+                                            'Python': '#06D6A0',
+                                            'Structures de données': '#14B8A6',
+                                            'BD 1': '#F59E0B',
+                                            'BD 2': '#D97706',
+                                            'Réseaux 1': '#0EA5E9',
+                                            'Réseaux 2': '#0284C7',
+                                            'Systèmes 1': '#64748B',
+                                            'Web 1': '#F72585',
+                                            'Web 2': '#E11D48',
+                                            'Génie logiciel': '#7209B7',
+                                            'DevOps': '#560BAD',
+                                            'Architecture': '#480CA8',
+                                            'IA 1': '#3F37C9',
+                                            'Sécurité': '#EF4444',
+                                            'Projet': '#FACC15'
+                                        } %}
                                         
-                                        {% set typeColor = isCM ? '#D97706' : (isTP ? '#3A86FF' : '#10B981') %}
-                                        {% set bgColor = isCM ? 'bg-amber-50' : (isTP ? 'bg-blue-50' : 'bg-emerald-50') %}
+                                        {% set subjectName = schedule.subject.name %}
+                                        {% set typeColor = subjectColors[subjectName] ?? '#3A86FF' %}
                                         
-                                        <div class="group relative bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer overflow-hidden {{ bgColor }}"
+                                        <div class="group relative bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer overflow-hidden"
+                                             style="background-color: {{ typeColor }}05"
                                              ondblclick="openEditModal({{ {
                                                  id: schedule.id,
                                                  subject: schedule.subject.id,
@@ -140,7 +161,8 @@
                                                  end: schedule.endTime|date('H:i'),
                                                  type: schedule.courseType,
                                                  classe: schedule.classe.id,
-                                                 semester: schedule.semester
+                                                 semester: schedule.semester,
+                                                 delete_token: csrf_token('delete' ~ schedule.id)
                                              }|json_encode }})">
                                             
                                             <!-- Left Stripe -->
@@ -225,7 +247,7 @@
         
         <!-- Form -->
         <div id="scheduleFormContent" class="p-8">
-            {{ form_start(schedule_form, {'attr': {'id': 'scheduleForm'}}) }}
+            {{ form_start(schedule_form, {'attr': {'id': 'scheduleForm', 'data-turbo': 'false'}}) }}
                 <div class="grid grid-cols-2 gap-6">
                     <!-- Full Width Inputs -->
                     <div class="col-span-2">
@@ -293,7 +315,6 @@
 </div>
 
 <form id="deleteForm" method="POST" action="" class="hidden"><input type="hidden" name="_token" id="deleteToken"></form>
-<input type="hidden" name="_token_delete_template" value="{{ csrf_token('delete' ~ 'ID_PLACEHOLDER') }}" class="hidden">
 
 <script>
     window.pageInit = () => {
@@ -313,11 +334,18 @@
         window.openNewModal = () => {
             modalTitle.innerText = "Nouveau Créneau";
             form.action = "{{ path('admin_schedule_new') }}";
-            form.reset();
-            {% if selectedClass %}
+            
+            // Don't use form.reset() as it clears hidden CSRF tokens
+            form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(el => {
+                if(el.name.includes('[semester]')) el.value = "1";
+                else el.value = "";
+            });
+
+            {% if selectedClass is defined and selectedClass %}
                 const classSelect = form.querySelector('[name*="[classe]"]');
                 if (classSelect) classSelect.value = "{{ selectedClass.id }}";
             {% endif %}
+            
             deleteBtn.classList.add('hidden');
             modal.classList.remove('hidden');
             setTimeout(() => modalCard.classList.remove('scale-95'), 10);
@@ -326,6 +354,10 @@
         window.openEditModal = (data) => {
             modalTitle.innerText = "Modifier le Créneau";
             form.action = `/admin/schedule/${data.id}/edit`;
+            
+            // Initial clear without touching CSRF
+            form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(el => el.value = "");
+
             populateField('subject', data.subject);
             populateField('teacher', data.teacher);
             populateField('dayOfWeek', data.day);
@@ -335,8 +367,10 @@
             populateField('room', data.room);
             populateField('classe', data.classe);
             populateField('semester', data.semester);
+            
             deleteBtn.classList.remove('hidden');
             deleteBtn.dataset.id = data.id;
+            deleteBtn.dataset.deleteToken = data.delete_token;
             modal.classList.remove('hidden');
             setTimeout(() => modalCard.classList.remove('scale-95'), 10);
         }
@@ -352,19 +386,24 @@
         }
 
         window.confirmDelete = () => {
-            if (confirm('Supprimer ce créneau ?')) {
+            window.showConfirm('Supprimer ce créneau ?', () => {
                 const id = deleteBtn.dataset.id;
+                const token = deleteBtn.dataset.deleteToken;
+                
                 const realDeleteForm = document.createElement('form');
+                realDeleteForm.setAttribute('data-turbo', 'false');
                 realDeleteForm.method = 'POST';
                 realDeleteForm.action = `/admin/schedule/${id}`;
+                
                 const tokenInput = document.createElement('input');
                 tokenInput.type = 'hidden';
                 tokenInput.name = '_token';
-                tokenInput.value = document.querySelector('input[name="_token_delete_template"]').value.replace('ID_PLACEHOLDER', id);
+                tokenInput.value = token;
+                
                 realDeleteForm.appendChild(tokenInput);
                 document.body.appendChild(realDeleteForm);
                 realDeleteForm.submit();
-            }
+            });
         }
     }
 </script>

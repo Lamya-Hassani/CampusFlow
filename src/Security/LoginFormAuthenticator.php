@@ -18,25 +18,35 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
+    // TargetPathTrait is a trait that provides a way to store the target path
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
 
+    // UrlGeneratorInterface is an interface that provides a way to generate URLs
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
     }
 
+    // authenticate is a method that is called when the user submits the login form
     public function authenticate(Request $request): Passport
     {
+        // get the email from the login form
         $email = $request->getPayload()->getString('email');
 
+        // set the last username in the session
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
+        // Passport is a class that represents the authentication process
         return new Passport(
+            // UserBadge is a class that represents the user
             new UserBadge($email),
+            // PasswordCredentials is a class that represents the password
             new PasswordCredentials($request->getPayload()->getString('password')),
             [
+                // CsrfTokenBadge is a class that represents the CSRF token
                 new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                // RememberMeBadge is a class that represents the remember me option
                 new RememberMeBadge(),
             ]
         );
@@ -44,6 +54,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        // get the target path from the session
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }

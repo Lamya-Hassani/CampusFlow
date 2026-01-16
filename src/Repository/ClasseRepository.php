@@ -18,29 +18,14 @@ class ClasseRepository extends ServiceEntityRepository
 
     public function findByNameOrField(string $query): array
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.name LIKE :q')
+        return $this->createQueryBuilder('c') // c is the alias for the Classe entity
+            ->where('c.name LIKE :q') // :q is the parameter for the search query
             ->orWhere('c.field LIKE :q')
             ->orWhere('c.level LIKE :q')
-            ->setParameter('q', '%' . $query . '%')
-            ->getQuery()
+            ->setParameter('q', '%' . $query . '%') // here we set the parameter for the search query
+            ->getQuery() // here we get the query that is the result of the search
             ->getResult();
     }
-
-    //    /**
-    //     * @return Classe[] Returns an array of Classe objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
     /**
      * @return array Returns an array with class name and student count
@@ -48,10 +33,10 @@ class ClasseRepository extends ServiceEntityRepository
     public function getStudentsCountByClass(): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c.name', 'COUNT(s.id) as studentCount')
-            ->leftJoin('c.students', 's')
-            ->groupBy('c.id')
-            ->getQuery()
+            ->select('c.name', 'COUNT(s.id) as studentCount')  // here we select the class name and the count of students
+            ->leftJoin('c.students', 's') // here we join the students table to the classes table
+            ->groupBy('c.id') // here we group the results by class id
+            ->getQuery() // here we get the query that is the result of the search
             ->getResult();
     }
 }

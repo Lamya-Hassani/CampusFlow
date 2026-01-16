@@ -146,7 +146,7 @@
                                     <a href="{{ path('admin_student_edit', {id: student.id}) }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-amber-500/10 hover:text-amber-600 transition-all" title="Modifier">
                                         <i class="fa-solid fa-pen-to-square text-sm"></i>
                                     </a>
-                                    <form method="post" action="{{ path('admin_student_delete', {id: student.id}) }}" class="inline" onsubmit="return confirm('Supprimer cet étudiant ?');">
+                                    <form method="post" action="{{ path('admin_student_delete', {id: student.id}) }}" class="inline" onsubmit="event.preventDefault(); window.showConfirm('Supprimer cet étudiant ?', () => this.submit());">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
                                         <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500/10 hover:text-rose-600 transition-all" title="Supprimer">
                                             <i class="fa-solid fa-trash-can text-sm"></i>
@@ -177,7 +177,7 @@
             <!-- Table Footer (Sticky at bottom of card) -->
             <div class="flex-none bg-slate-50 border-t border-slate-100 px-8 py-4 flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                 <span>Total: {{ students|length }} Étudiants</span>
-                <span>CampusFlow Administration</span>
+                <span>CampusFlow</span>
             </div>
         </div>
     </div>

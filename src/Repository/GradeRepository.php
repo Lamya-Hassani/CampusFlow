@@ -10,8 +10,10 @@ use Doctrine\DBAL\Connection;
 /**
  * @extends ServiceEntityRepository<Grade>
  */
+//ServiceEntityRepository est une classe de base pour les repositories
 class GradeRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Grade::class);
@@ -29,7 +31,7 @@ class GradeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
 
-        $total = (int) ($result['total'] ?? 0);
+        $total = (int) ($result['total'] ?? 0); // ?? 0 signifie que si total est null, on met 0
         $success = (int) ($result['success'] ?? 0);
         $rate = $total > 0 ? round(($success / $total) * 100, 2) : 0.0;
 
@@ -60,7 +62,7 @@ class GradeRepository extends ServiceEntityRepository
 
         $stmt = $conn->prepare($sql);
         $results = $stmt->executeQuery([
-            'year' => (int) date('Y'),
+            'year' => (int) date('Y'), // yeas has as a value the current year
         ])->fetchAllAssociative();
 
         $data = [];

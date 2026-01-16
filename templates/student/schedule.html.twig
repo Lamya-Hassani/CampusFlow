@@ -53,11 +53,33 @@
                     {% for schedule in weekCalendar[dayEnglish] %}
                         <!-- Class Card -->
                         <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-                            <!-- Color Stripe based on Type -->
-                            <div class="absolute left-0 top-0 bottom-0 w-1.5 
-                                {% if schedule.courseType == 'TP' %}bg-purple-500
-                                {% elseif schedule.courseType == 'Cours' %}bg-blue-500
-                                {% else %}bg-yellow-400{% endif %}">
+                            <!-- Color Stripe based on Subject -->
+                            {% set subjectColors = {
+                                'Analyse 1': '#3A86FF',
+                                'Algèbre 1': '#4361EE',
+                                'Maths discrètes': '#4895EF',
+                                'Probabilités': '#4CC9F0',
+                                'Programmation 1': '#10B981',
+                                'Python': '#06D6A0',
+                                'Structures de données': '#14B8A6',
+                                'BD 1': '#F59E0B',
+                                'BD 2': '#D97706',
+                                'Réseaux 1': '#0EA5E9',
+                                'Réseaux 2': '#0284C7',
+                                'Systèmes 1': '#64748B',
+                                'Web 1': '#F72585',
+                                'Web 2': '#E11D48',
+                                'Génie logiciel': '#7209B7',
+                                'DevOps': '#560BAD',
+                                'Architecture': '#480CA8',
+                                'IA 1': '#3F37C9',
+                                'Sécurité': '#EF4444',
+                                'Projet': '#FACC15'
+                            } %}
+                            {% set subjectName = schedule.subject.name %}
+                            {% set typeColor = subjectColors[subjectName] ?? '#3A86FF' %}
+
+                            <div class="absolute left-0 top-0 bottom-0 w-1.5" style="background-color: {{ typeColor }}">
                             </div>
 
                             <div class="pl-3">
@@ -97,15 +119,5 @@
     </div>
 </div>
 
-<div class="mt-6 flex flex-wrap gap-4 text-sm text-slate-600 justify-center md:justify-start">
-    <div class="flex items-center">
-        <span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span> Cours Magistral
-    </div>
-    <div class="flex items-center">
-        <span class="w-3 h-3 rounded-full bg-purple-500 mr-2"></span> Travaux Pratiques (TP)
-    </div>
-    <div class="flex items-center">
-        <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span> Autre
-    </div>
-</div>
+{# Legend removed as coloring is now subject-based #}
 {% endblock %}

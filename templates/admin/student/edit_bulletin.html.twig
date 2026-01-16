@@ -64,8 +64,10 @@
 
 <!-- Prompt for PDF -->
 <script>
-  if (confirm('Voulez-vous télécharger ce bulletin en PDF ?')) {
-      window.location.href = '{{ path('admin_student_bulletin_pdf', {id: student.id, semester: semester}) }}';
-  }
+  window.pageInit = () => {
+      window.showConfirm('Voulez-vous télécharger ce bulletin en PDF ?', () => {
+          window.location.href = '{{ path('admin_student_bulletin_pdf', {id: student.id, semester: semester}) }}';
+      });
+  };
 </script>
 {% endblock %}

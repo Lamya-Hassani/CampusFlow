@@ -51,9 +51,11 @@ class ClasseType extends AbstractType
             ]);
     }
 
+    // configureOptions est une méthode de configuration des options du formulaire
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            // data_class est l'entité liée au formulaire
             'data_class' => Classe::class,
         ]);
     }

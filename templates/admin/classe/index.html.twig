@@ -152,7 +152,7 @@
                                     <a href="{{ path('admin_classe_edit', {id: classe.id}) }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-amber-500/10 hover:text-amber-600 transition-all" title="Modifier">
                                         <i class="fa-solid fa-pen-to-square text-sm"></i>
                                     </a>
-                                    <form method="post" action="{{ path('admin_classe_delete', {id: classe.id}) }}" class="inline" onsubmit="return confirm('Supprimer cette classe ?');">
+                                    <form method="post" action="{{ path('admin_classe_delete', {id: classe.id}) }}" class="inline" onsubmit="event.preventDefault(); window.showConfirm('Supprimer cette classe ?', () => this.submit());">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ classe.id) }}">
                                         <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500/10 hover:text-rose-600 transition-all" title="Supprimer">
                                             <i class="fa-solid fa-trash-can text-sm"></i>
@@ -186,7 +186,7 @@
                     <span>Total: {{ classes|length }} Classes</span>
                     <span>Capacité Totale: {{ classes|reduce((carry, c) => carry + c.maxCapacity) }}</span>
                 </div>
-                <span>CampusFlow Administration</span>
+                <span>CampusFlow</span>
             </div>
         </div>
     </div>

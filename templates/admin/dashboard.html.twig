@@ -190,128 +190,141 @@
     </div>
 </div>
 
-<!-- Chart JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    window.pageInit = function() {
-        
-        // --- PERFORMANCE CHART CONFIG ---
-        const monthlyData = {{ monthlyAverages|json_encode|raw }};
-        const labels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-        
-        // FIX: Ensure data points are not undefined, so the line doesn't break
-        const dataPoints = labels.map((_, idx) => monthlyData[idx + 1] ?? null);
+    (function() {
+        // Use a persistent object to store chart instances across Turbo loads
+        window.dashboardCharts = window.dashboardCharts || {};
 
-        const gradesCanvas = document.getElementById('gradesChart');
-        if (gradesCanvas) {
-            new Chart(gradesCanvas, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Moyenne',
-                        data: dataPoints,
-                        borderColor: '#D97706', 
-                        borderWidth: 4,
-                        // FIX: spanGaps=true ensures line connects even if data is missing between months
-                        spanGaps: true, 
-                        backgroundColor: (context) => {
-                            const ctx = context.chart.ctx;
-                            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                            gradient.addColorStop(0, 'rgba(217, 119, 6, 0.15)'); 
-                            gradient.addColorStop(1, 'rgba(217, 119, 6, 0)');
-                            return gradient;
-                        },
-                        fill: true,
-                        tension: 0.4,
-                        // FIX: Point background matches the new off-white BG (#FFFFFF or #F8FAFC)
-                        pointBackgroundColor: '#FFFFFF', 
-                        pointBorderColor: '#D97706',     
-                        pointBorderWidth: 3,
-                        pointRadius: 6,
-                        pointHoverRadius: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#0F172A',
-                            titleColor: '#F59E0B',
-                            bodyColor: '#FFF',
-                            padding: 15,
-                            displayColors: false,
-                            titleFont: { size: 14, family: 'sans-serif' },
-                            bodyFont: { size: 16, weight: 'bold' },
-                            callbacks: {
-                                label: (ctx) => `Moyenne : ${ctx.raw} / 20`
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 20, 
-                            grid: {
-                                color: 'rgba(15, 23, 42, 0.05)',
-                                borderDash: [5, 5]
-                            },
-                            ticks: {
-                                color: '#0F172A', 
-                                font: {
-                                    size: 14, 
-                                    weight: 'bold'
+        window.pageInit = function() {
+            console.log('Initializing Dashboard Charts...');
+            
+            // --- Chart 1: PERFORMANCE CHART ---
+            try {
+                const monthlyData = {{ monthlyAverages|json_encode|raw }};
+                const labels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                const dataPoints = labels.map((_, idx) => monthlyData[idx + 1] ?? null);
+
+                const gradesCanvas = document.getElementById('gradesChart');
+                if (gradesCanvas) {
+                    // Destroy existing instance if it exists
+                    if (window.dashboardCharts.grades) {
+                        window.dashboardCharts.grades.destroy();
+                        window.dashboardCharts.grades = null;
+                    }
+
+                    window.dashboardCharts.grades = new Chart(gradesCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Moyenne',
+                                data: dataPoints,
+                                borderColor: '#D97706', 
+                                borderWidth: 4,
+                                spanGaps: true, 
+                                backgroundColor: (context) => {
+                                    const ctx = context.chart.ctx;
+                                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                                    gradient.addColorStop(0, 'rgba(217, 119, 6, 0.15)'); 
+                                    gradient.addColorStop(1, 'rgba(217, 119, 6, 0)');
+                                    return gradient;
                                 },
-                                padding: 10
-                            }
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#FFFFFF', 
+                                pointBorderColor: '#D97706',     
+                                pointBorderWidth: 3,
+                                pointRadius: 6,
+                                pointHoverRadius: 10
+                            }]
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                color: '#64748b',
-                                font: { size: 12, weight: 'bold' }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#0F172A',
+                                    titleColor: '#F59E0B',
+                                    bodyColor: '#FFF',
+                                    padding: 15,
+                                    displayColors: false,
+                                    titleFont: { size: 14, family: 'sans-serif' },
+                                    bodyFont: { size: 16, weight: 'bold' },
+                                    callbacks: {
+                                        label: (ctx) => `Moyenne : ${ctx.raw} / 20`
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 20, 
+                                    grid: {
+                                        color: 'rgba(15, 23, 42, 0.05)',
+                                        borderDash: [5, 5]
+                                    },
+                                    ticks: {
+                                        color: '#0F172A', 
+                                        font: { size: 14, weight: 'bold' },
+                                        padding: 10
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: '#64748b',
+                                        font: { size: 12, weight: 'bold' }
+                                    }
+                                }
                             }
                         }
-                    }
+                    });
                 }
-            });
-        }
+            } catch (e) {
+                console.error('Error initializing Performance Chart:', e);
+            }
 
-        // --- DISTRIBUTION CHART ---
-        const distributionCanvas = document.getElementById('distributionChart');
-        if (distributionCanvas) {
-            new Chart(distributionCanvas, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Apex (>16)', 'Distinction (14-16)', 'Standard (10-14)', 'Risk (<10)'],
-                    datasets: [{
-                        data: [25, 30, 35, 10], 
-                        backgroundColor: [
-                            '#10B981', 
-                            '#3A86FF', 
-                            '#D97706', 
-                            '#E11D48'  
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '75%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#0F172A',
-                            bodyFont: { size: 14 }
-                        }
+            // --- Chart 2: DISTRIBUTION CHART ---
+            try {
+                const distributionCanvas = document.getElementById('distributionChart');
+                if (distributionCanvas) {
+                    // Destroy existing instance if it exists
+                    if (window.dashboardCharts.distribution) {
+                        window.dashboardCharts.distribution.destroy();
+                        window.dashboardCharts.distribution = null;
                     }
+
+                    window.dashboardCharts.distribution = new Chart(distributionCanvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Apex (>16)', 'Distinction (14-16)', 'Standard (10-14)', 'Risk (<10)'],
+                            datasets: [{
+                                data: [25, 30, 35, 10], 
+                                backgroundColor: ['#10B981', '#3A86FF', '#D97706', '#E11D48'],
+                                borderWidth: 0,
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%',
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#0F172A',
+                                    bodyFont: { size: 14 }
+                                }
+                            }
+                        }
+                    });
                 }
-            });
-        }
-    }
+            } catch (e) {
+                console.error('Error initializing Distribution Chart:', e);
+            }
+        };
+    })();
 </script>
 {% endblock %}

@@ -21,7 +21,6 @@ class GradeController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(GradeRepository $gradeRepository): Response
     {
-        // Optional: restrict access if needed
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('admin/grade/index.html.twig', [
             'grades' => $gradeRepository->findAll(),
@@ -31,6 +30,7 @@ class GradeController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $grade = new Grade();
         $form = $this->createForm(GradeType::class, $grade);
         $form->handleRequest($request);
@@ -53,6 +53,7 @@ class GradeController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Grade $grade): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('admin/grade/show.html.twig', [
             'grade' => $grade,
         ]);
@@ -61,6 +62,7 @@ class GradeController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Grade $grade): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(GradeType::class, $grade);
         $form->handleRequest($request);
 
@@ -81,6 +83,8 @@ class GradeController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Grade $grade): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         if ($this->isCsrfTokenValid('delete'.$grade->getId(), $request->request->get('_token'))) {
             $this->em->remove($grade);
             $this->em->flush();

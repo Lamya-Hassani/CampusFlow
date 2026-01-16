@@ -20,14 +20,18 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(SubjectRepository $subjectRepository): Response
+    public function index(SubjectRepository $subjectRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $subjects = $subjectRepository->findAll();
+        $search = $request->query->get('search');
+        $subjects = $search
+            ? $subjectRepository->findBySearch($search)
+            : $subjectRepository->findAll();
 
         return $this->render('admin/subject/index.html.twig', [
             'subjects' => $subjects,
+            'search' => $search,
         ]);
     }
 

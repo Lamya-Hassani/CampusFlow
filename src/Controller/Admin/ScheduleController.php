@@ -52,7 +52,7 @@ class ScheduleController extends AbstractController
         }
 
         $newSchedule = new Schedule();
-        $newSchedule->setSemester(1); // Default
+        $newSchedule->setSemester(1);
 
         return $this->render('admin/schedule/index.html.twig', [
             'classes' => $classes,
@@ -102,7 +102,8 @@ class ScheduleController extends AbstractController
 
         return $this->render('admin/schedule/new.html.twig', [
             'schedule' => $schedule,
-            'form' => $form,
+            'form' => $form->createView(),
+            'selectedClass' => null, // Added to prevent Twig error
         ]);
     }
 
@@ -145,7 +146,8 @@ class ScheduleController extends AbstractController
 
         return $this->render('admin/schedule/edit.html.twig', [
             'schedule' => $schedule,
-            'form' => $form,
+            'schedule_form' => $form->createView(),
+            'selectedClass' => $schedule->getClasse(), // Added to satisfy template
         ]);
     }
 

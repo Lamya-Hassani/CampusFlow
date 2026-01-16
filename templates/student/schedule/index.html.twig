@@ -60,21 +60,7 @@
                     </div>
                 </div>
                 
-                <!-- Legend -->
-                <div class="hidden md:flex items-center gap-4 bg-white/50 backdrop-blur-sm px-5 py-3 rounded-2xl border border-[#0F172A]/5 shadow-sm">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">CM / Cours</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#3A86FF]"></span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">TP</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">TD / Autre</span>
-                    </div>
-                </div>
+                <!-- No Legend needed for subject-based colors as names are explicit -->
             </div>
         </div>
     </div>
@@ -99,30 +85,47 @@
                     {% set isToday = "now"|date('l') == dayEnglish %}
                     
                     <!-- Column -->
-                    <div class="flex flex-col gap-4 {{ isToday ? 'relative p-2 -m-2 rounded-3xl bg-gradient-to-b from-[#F59E0B]/5 to-transparent' : '' }}">
+                    <div class="flex flex-col gap-4 {{ isToday ? 'relative p-2 -m-2 rounded-3xl bg-gradient-to-b from-slate-500/5 to-transparent' : '' }}">
                         
                         <!-- Day Header -->
                         <div class="text-center py-3 rounded-xl font-heading font-bold uppercase tracking-widest text-xs shadow-sm sticky top-0 z-10 transition-transform
-                            {{ isToday ? 'bg-[#0F172A] text-white ring-4 ring-[#F59E0B]/20 shadow-lg' : 'bg-slate-100 text-slate-500' }}">
+                            {{ isToday ? 'bg-[#0F172A] text-white ring-4 ring-slate-100 shadow-lg' : 'bg-slate-100 text-slate-500' }}">
                             {{ dayFrench }}
-                            {% if isToday %}<span class="block text-[8px] text-[#F59E0B] mt-0.5">Aujourd'hui</span>{% endif %}
+                            {% if isToday %}<span class="block text-[8px] text-[#3A86FF] mt-0.5">Aujourd'hui</span>{% endif %}
                         </div>
 
                         <!-- Schedule Items -->
                         <div class="flex flex-col gap-3 h-full">
                             {% for schedule in daySchedules %}
-                                {# 
-                                   FIXED COLOR LOGIC: 
-                                   Checks for 'CM' or 'Cours' -> Orange (#F59E0B)
-                                   Checks for 'TP' -> Blue (#3A86FF)
-                                   Checks for 'TD' or others -> Green (#10B981)
-                                #}
-                                {% set isCM = (schedule.courseType == 'CM' or schedule.courseType == 'Cours') %}
-                                {% set isTP = (schedule.courseType == 'TP') %}
+                                {# SUBJECT-BASED COLORS #}
+                                {% set subjectColors = {
+                                    'Analyse 1': '#3A86FF',
+                                    'Algèbre 1': '#4361EE',
+                                    'Maths discrètes': '#4895EF',
+                                    'Probabilités': '#4CC9F0',
+                                    'Programmation 1': '#10B981',
+                                    'Python': '#06D6A0',
+                                    'Structures de données': '#14B8A6',
+                                    'BD 1': '#F59E0B',
+                                    'BD 2': '#D97706',
+                                    'Réseaux 1': '#0EA5E9',
+                                    'Réseaux 2': '#0284C7',
+                                    'Systèmes 1': '#64748B',
+                                    'Web 1': '#F72585',
+                                    'Web 2': '#E11D48',
+                                    'Génie logiciel': '#7209B7',
+                                    'DevOps': '#560BAD',
+                                    'Architecture': '#480CA8',
+                                    'IA 1': '#3F37C9',
+                                    'Sécurité': '#EF4444',
+                                    'Projet': '#FACC15'
+                                } %}
                                 
-                                {% set typeColor = isCM ? '#F59E0B' : (isTP ? '#3A86FF' : '#10B981') %}
+                                {% set subjectName = schedule.subject.name %}
+                                {% set typeColor = subjectColors[subjectName] ?? '#3A86FF' %}
                                 
-                                <div class="group relative bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:border-transparent hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-default overflow-hidden flex-grow-0 hover:-translate-y-1">
+                                <div class="group relative bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:border-transparent hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-default overflow-hidden flex-grow-0 hover:-translate-y-1"
+                                     style="background-color: {{ typeColor }}05;">
                                     
                                     <!-- Colored Stripe -->
                                     <div class="absolute left-0 top-0 bottom-0 w-1.5 transition-all group-hover:w-2" style="background-color: {{ typeColor }};"></div>
